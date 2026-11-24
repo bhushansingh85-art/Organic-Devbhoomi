@@ -153,6 +153,9 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
   style={{
     width: 44,
     height: 44,
+    position: 'fixed',
+    top: '120px',
+    left: '20px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
