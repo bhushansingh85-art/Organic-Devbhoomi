@@ -231,8 +231,7 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
       }}
     >
       {item}
-    </button>
-  ))}
+    </button>  
 </div>
 
         <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
