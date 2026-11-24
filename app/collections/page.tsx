@@ -234,56 +234,59 @@ export default function CollectionsPage() {
             marginBottom: 20
           }}
         >
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            aria-label="Go back"
-            style={{
-              width: 44,
-              height: 44,
-              position: 'fixed',
-              top: '280px',
-              left: '20px',
-              display: showFloatingControls ? 'flex' : 'none',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--text)',
-              fontSize: 32,
-              fontWeight: 700,
-              lineHeight: 1,
-              cursor: 'pointer',
-              padding: 0,
-              zIndex: 20
-            }}
-          >
-            ←
-          </button>
+          <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 20 }}>
+  <button
+    type="button"
+    onClick={() => window.history.back()}
+    aria-label="Go back"
+    style={{
+      width: 44,
+      height: 44,
+      display: 'flex',
+      alignItems: 'center',
+      position: 'fixed',
+      top: '280px',
+      right: '20px',
+      justifyContent: 'center',
+      border: 'none',
+      background: 'transparent',
+      color: 'var(--text)',
+      fontSize: 32,
+      fontWeight: 700,
+      lineHeight: 1,
+      cursor: 'pointer',
+      padding: 0,
+      zIndex: 20,
+    }}
+  >
+    ←
+  </button>
 
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value)}
-            aria-label="Sort products"
-            style={{
-              padding: '0px 15px',
-              width: '100px',
-              height: '33px',
-              border: '1px solid #000000',
-              borderRadius: 4,
-              background: 'var(--bg)',
-              color: 'var(--text)',
-              display: showFloatingControls ? 'block' : 'none',
-              fontSize: 11
-            }}
-          >
-            <option value="featured">Featured</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="rating">Top Rated</option>
-          </select>
-        </div>
-
+  <select
+    value={sort}
+    onChange={(event) => setSort(event.target.value)}
+    aria-label="Sort products"
+    style={{
+      padding: '0px 15px',
+      width: '100px',
+      height: '33px',
+      position: 'fixed',
+      top: '280px',
+      right: '20px',
+      border: '1px solid #000000',
+      borderRadius: 4,
+      background: 'var(--bg)',
+      color: 'var(--text)',
+      display: 'block',
+      fontSize: 11,
+    }}
+  >
+    <option value="featured">Featured</option>
+    <option value="price-low">Price: Low to High</option>
+    <option value="price-high">Price: High to Low</option>
+    <option value="rating">Top Rated</option>
+  </select>
+</div>
         {/* Single-line horizontally scrollable category bar */}
         <div
           role="tablist"
