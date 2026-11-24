@@ -1,23 +1,23 @@
-
+import Link from 'next/link';
 import { Sprout, Store, UserRound } from 'lucide-react';
 
 export default function BottomNav() {
   return (
     <nav className="bottom-nav">
-      <a href="/">
+      <Link href="/">
         <Sprout />
         <span>Home</span>
-      </a>
+      </Link>
 
-      <a href="/collections">
+      <Link href="/collections">
         <Store />
         <span>Shop</span>
-      </a>
+      </Link>
 
-      <a href="/profile">
+      <Link href="/profile">
         <UserRound />
         <span>Profile</span>
-      </a>
+      </Link>
     </nav>
   );
 }
