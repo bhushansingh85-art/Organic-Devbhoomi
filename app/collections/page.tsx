@@ -377,6 +377,7 @@ export default function CollectionsPage() {
           </div>
         )}
       </section>
-    </main>  
+    </main>
+  );    
 }
 
