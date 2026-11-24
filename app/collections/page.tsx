@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import Header from '../components/Header';
 
 type Product = {
@@ -16,6 +16,7 @@ type Product = {
   reviews: number;
   image: string;
   tag?: string;
+  featured?: boolean;
   description: string;
 };
 
@@ -31,6 +32,7 @@ const products: Product[] = [
     reviews: 128,
     image: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=900&q=85',
     tag: 'Bestseller',
+    featured: true,
     description: 'A statement indoor plant with beautiful split leaves.'
   },
   {
@@ -43,6 +45,7 @@ const products: Product[] = [
     reviews: 96,
     image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=900&q=85',
     tag: 'Fresh harvest',
+    featured: true,
     description: 'Crisp, naturally sweet apples sourced from Himachal orchards.'
   },
   {
@@ -66,6 +69,7 @@ const products: Product[] = [
     reviews: 83,
     image: 'https://images.unsplash.com/photo-1593691509543-c55fb32e5cee?w=900&q=85',
     tag: 'Easy care',
+    featured: true,
     description: 'An elegant flowering houseplant that prefers soft light.'
   },
   {
@@ -95,30 +99,51 @@ const products: Product[] = [
 
 const categories = ['All', 'Plants', 'Fresh Fruits', 'Flowers & Seeds', 'More', 'Best Value'];
 
-function BrandMark() {
+function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 64 54">
-        <path
-          d="M4 45 25 17l10 13L45 15l15 30H4Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3.4"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M25 17 31 25 35 30M13 45c5-9 13-13 23-12M35 33c4-7 10-10 17-11"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M35 33c-1-7 2-12 9-15 1 7-2 12-9 15Z"
-          fill="currentColor"
-        />
-      </svg>
-    </div>
+    <article className="product-card">
+      <Link
+        href={`/products/${product.id}`}
+        className="product-image-wrap"
+        style={{ display: 'block' }}
+      >
+        <img src={product.image} alt={product.name} />
+        {product.tag && (
+          <span className="product-tag">{product.tag}</span>
+        )}
+      </Link>
+
+      <div className="product-info">
+        <div className="product-meta">
+          <span>{product.category}</span>
+          <span className="rating">
+            <Star size={11} fill="currentColor" />
+            {product.rating}
+            <small>({product.reviews})</small>
+          </span>
+        </div>
+
+        <h3>{product.name}</h3>
+
+        <div className="product-bottom">
+          <div>
+            <b>₹{product.price}</b>
+            <small> / {product.unit}</small>
+            {product.oldPrice && (
+              <del>₹{product.oldPrice}</del>
+            )}
+          </div>
+
+          <Link
+            href={`/products/${product.id}`}
+            className="add-btn"
+            style={{ textDecoration: 'none' }}
+          >
+            View Details <ArrowRight size={13} />
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -151,6 +176,16 @@ export default function CollectionsPage() {
     };
   }, []);
 
+  const featuredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesFeatured = Boolean(product.featured || product.tag);
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(query.toLowerCase());
+      return matchesFeatured && matchesSearch;
+    });
+  }, [query]);
+
   const visibleProducts = useMemo(() => {
     const result = products.filter((product) => {
       const matchesCategory =
@@ -168,6 +203,9 @@ export default function CollectionsPage() {
 
     return result;
   }, [category, query, sort]);
+
+  const showFeaturedSection =
+    category === 'All' && sort === 'featured' && featuredProducts.length > 0;
 
   return (
     <main>
@@ -193,7 +231,7 @@ export default function CollectionsPage() {
             alignItems: 'center',
             gap: 14,
             flexWrap: 'wrap',
-            marginBottom: 24
+            marginBottom: 20
           }}
         >
           <button
@@ -216,7 +254,8 @@ export default function CollectionsPage() {
               fontWeight: 700,
               lineHeight: 1,
               cursor: 'pointer',
-              padding: 0
+              padding: 0,
+              zIndex: 20
             }}
           >
             ←
@@ -245,12 +284,19 @@ export default function CollectionsPage() {
           </select>
         </div>
 
+        {/* Single-line horizontally scrollable category bar */}
         <div
+          role="tablist"
+          aria-label="Product categories"
           style={{
             display: 'flex',
+            flexWrap: 'nowrap',
+            overflowX: 'auto',
             gap: 8,
-            flexWrap: 'wrap',
-            marginBottom: 16
+            paddingBottom: 8,
+            marginBottom: 14,
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin'
           }}
         >
           {categories.map((item) => (
@@ -260,6 +306,8 @@ export default function CollectionsPage() {
               className={`category-pill ${category === item ? 'active' : ''}`}
               onClick={() => setCategory(item)}
               style={{
+                flex: '0 0 auto',
+                whiteSpace: 'nowrap',
                 border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
                 borderRadius: '999px',
                 padding: '6px 14px',
@@ -274,52 +322,50 @@ export default function CollectionsPage() {
           Showing {visibleProducts.length} products
         </p>
 
+        {/* Separate Featured Collection block */}
+        {showFeaturedSection && (
+          <div style={{ marginBottom: 36 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                marginBottom: 14
+              }}
+            >
+              <h3 style={{ margin: 0, fontSize: 18 }}>Featured Collection</h3>
+              <span style={{ color: 'var(--sub)', fontSize: 12 }}>
+                Handpicked highlights
+              </span>
+            </div>
+
+            <div className="product-grid">
+              {featuredProducts.map((product) => (
+                <ProductCard key={`featured-${product.id}`} product={product} />
+              ))}
+            </div>
+
+            <hr
+              style={{
+                border: 'none',
+                borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                marginTop: 32
+              }}
+            />
+          </div>
+        )}
+
+        {/* All / Filtered Collection grid */}
+        {showFeaturedSection && (
+          <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18 }}>
+            All Collections
+          </h3>
+        )}
+
         {visibleProducts.length > 0 ? (
           <div className="product-grid">
             {visibleProducts.map((product) => (
-              <article className="product-card" key={product.id}>
-                <Link
-                  href={`/products/${product.id}`}
-                  className="product-image-wrap"
-                  style={{ display: 'block' }}
-                >
-                  <img src={product.image} alt={product.name} />
-                  {product.tag && (
-                    <span className="product-tag">{product.tag}</span>
-                  )}
-                </Link>
-
-                <div className="product-info">
-                  <div className="product-meta">
-                    <span>{product.category}</span>
-                    <span className="rating">
-                      <Star size={11} fill="currentColor" />
-                      {product.rating}
-                      <small>({product.reviews})</small>
-                    </span>
-                  </div>
-
-                  <h3>{product.name}</h3>
-
-                  <div className="product-bottom">
-                    <div>
-                      <b>₹{product.price}</b>
-                      <small> / {product.unit}</small>
-                      {product.oldPrice && (
-                        <del>₹{product.oldPrice}</del>
-                      )}
-                    </div>
-
-                    <Link
-                      href={`/products/${product.id}`}
-                      className="add-btn"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      View Details <ArrowRight size={13} />
-                    </Link>
-                  </div>
-                </div>
-              </article>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
