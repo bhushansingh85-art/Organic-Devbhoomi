@@ -206,7 +206,8 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
               border: '1px solid #000000',
               borderRadius: 4,
               background: 'var(--bg)',
-              color: 'var(--text)',              
+              color: 'var(--text)',
+              display: showFloatingControls ? 'block' : 'none',
               fontSize: 11
             }}
           >
@@ -216,11 +217,7 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
             <option value="rating">Top Rated</option>
           </select>
         </div>
-
-        <div
-          className="category-row"
-          style={{ display: showFloatingControls ? undefined : 'none' }}
-        >
+        
   {categories.map((item) => (
     <button
       key={item}
@@ -230,10 +227,7 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
       style={{
         border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
         borderRadius: '999px',
-        padding: '6px 14px',
-        position: 'fixed',
-        top: '280px',
-        right: '20px',
+        padding: '6px 14px',        
       }}
     >
       {item}
