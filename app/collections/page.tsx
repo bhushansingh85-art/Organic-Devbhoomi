@@ -94,7 +94,33 @@ const products: Product[] = [
 ];
 
 const categories = ['All', 'Plants', 'Fresh Fruits', 'Flowers & Seeds', 'More', 'Best Value'];
-function BrandMark(){return <div className="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 54"><path d="M4 45 25 17l10 13L45 15l15 30H4Z" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinejoin="round"/><path d="M25 17 31 25 35 30M13 45c5-9 13-13 23-12M35 33c4-7 10-10 17-11" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round"/><path d="M35 33c-1-7 2-12 9-15 1 7-2 12-9 15Z" fill="currentColor"/></svg></div>}
+
+function BrandMark() {
+  return (
+    <div className="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 54">
+        <path
+          d="M4 45 25 17l10 13L45 15l15 30H4Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3.4"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M25 17 31 25 35 30M13 45c5-9 13-13 23-12M35 33c4-7 10-10 17-11"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M35 33c-1-7 2-12 9-15 1 7-2 12-9 15Z"
+          fill="currentColor"
+        />
+      </svg>
+    </div>
+  );
+}
 
 export default function CollectionsPage() {
   const [category, setCategory] = useState('All');
@@ -145,7 +171,7 @@ export default function CollectionsPage() {
 
   return (
     <main>
-     <Header />
+      <Header />
       <section className="section-wrap collection-section">
         <div className="section-heading">
           <div>
@@ -154,46 +180,47 @@ export default function CollectionsPage() {
               FROM NATURE TO YOUR HOME
             </span>
             <h2>Our <em>Collections</em></h2>
-</div>
-<p className="collection-description">
-Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality seeds online. Shop nature-inspired products and get them delivered to your doorstep across Himachal Pradesh.</p>
-</div>
+          </div>
+          <p className="collection-description">
+            Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality seeds online. Shop nature-inspired products and get them delivered to your doorstep across Himachal Pradesh.
+          </p>
+        </div>
 
         <div
-  style={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 14,
-    flexWrap: 'wrap',
-    marginBottom: 24
-  }}
->
-  <button
-  type="button"
-  onClick={() => window.history.back()}
-  aria-label="Go back"
-  style={{
-    width: 44,
-    height: 44,
-    position: 'fixed',
-    top: '280px',
-    left: '20px',
-    display: showFloatingControls ? 'flex' : 'none',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: 'none',
-    background: 'transparent',
-    color: 'var(--text)',
-    fontSize: 32,
-    fontWeight: 700,
-    lineHeight: 1,
-    cursor: 'pointer',
-    padding: 0
-  }}
->
-  ←
-</button>      
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 14,
+            flexWrap: 'wrap',
+            marginBottom: 24
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => window.history.back()}
+            aria-label="Go back"
+            style={{
+              width: 44,
+              height: 44,
+              position: 'fixed',
+              top: '280px',
+              left: '20px',
+              display: showFloatingControls ? 'flex' : 'none',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              background: 'transparent',
+              color: 'var(--text)',
+              fontSize: 32,
+              fontWeight: 700,
+              lineHeight: 1,
+              cursor: 'pointer',
+              padding: 0
+            }}
+          >
+            ←
+          </button>
 
           <select
             value={sort}
@@ -217,25 +244,33 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
             <option value="rating">Top Rated</option>
           </select>
         </div>
-        
-  {categories.map((item) => (
-    <button
-      key={item}
-      type="button"
-      className={`category-pill ${category === item ? 'active' : ''}`}
-      onClick={() => setCategory(item)}
-     style={{
-        border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
-        borderRadius: '999px',
-        padding: '6px 14px',
-      }}
-    >
-      {item}
-    </button>
-  ))}
-</div>
-      
-      <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            flexWrap: 'wrap',
+            marginBottom: 16
+          }}
+        >
+          {categories.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={`category-pill ${category === item ? 'active' : ''}`}
+              onClick={() => setCategory(item)}
+              style={{
+                border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
+                borderRadius: '999px',
+                padding: '6px 14px',
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
           Showing {visibleProducts.length} products
         </p>
 
