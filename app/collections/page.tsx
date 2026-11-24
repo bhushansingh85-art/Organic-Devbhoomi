@@ -224,17 +224,18 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
       type="button"
       className={`category-pill ${category === item ? 'active' : ''}`}
       onClick={() => setCategory(item)}
-      style={{
+     style={{
         border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
         borderRadius: '999px',
-        padding: '6px 14px',        
+        padding: '6px 14px',
       }}
     >
       {item}
-    </button>  
+    </button>
+  ))}
 </div>
-
-        <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
+      
+      <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
           Showing {visibleProducts.length} products
         </p>
 
