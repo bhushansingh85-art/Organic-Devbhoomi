@@ -89,12 +89,16 @@
     overflow-x: auto;
     overflow-y: hidden;
     box-sizing: border-box;
-    scrollbar-width: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
   }
 
   .category-row::-webkit-scrollbar {
-    display: none;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
 
   .category-pill {
