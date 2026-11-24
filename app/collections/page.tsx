@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Search, ArrowRight, Star } from 'lucide-react';
 import Header from '../components/Header';
@@ -101,6 +100,30 @@ export default function CollectionsPage() {
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('featured');
+  const [showFloatingControls, setShowFloatingControls] = useState(true);
+
+  useEffect(() => {
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+
+    const handleScroll = () => {
+      if (window.scrollY <= 10) {
+        setShowFloatingControls(true);
+      } else {
+        setShowFloatingControls(false);
+      }
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        setShowFloatingControls(true);
+      }, 250);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
 
   const visibleProducts = useMemo(() => {
     const result = products.filter((product) => {
@@ -154,9 +177,9 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
     width: 44,
     height: 44,
     position: 'fixed',
-    top: '300px',
+    top: '280px',
     left: '20px',
-    display: 'flex',
+    display: showFloatingControls ? 'flex' : 'none',
     alignItems: 'center',
     justifyContent: 'center',
     border: 'none',
@@ -194,7 +217,10 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
           </select>
         </div>
 
-        <div className="category-row">
+        <div
+          className="category-row"
+          style={{ display: showFloatingControls ? undefined : 'none' }}
+        >
   {categories.map((item) => (
     <button
       key={item}
@@ -204,7 +230,10 @@ Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality se
       style={{
         border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
         borderRadius: '999px',
-        padding: '6px 14px',        
+        padding: '6px 14px',
+        position: 'fixed',
+        top: '280px',
+        right: '20px',
       }}
     >
       {item}
