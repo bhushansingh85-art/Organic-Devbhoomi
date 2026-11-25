@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 import Header from '../components/Header';
@@ -151,30 +151,6 @@ export default function CollectionsPage() {
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('featured');
-  const [showFloatingControls, setShowFloatingControls] = useState(true);
-
-  useEffect(() => {
-    let scrollTimeout: ReturnType<typeof setTimeout>;
-
-    const handleScroll = () => {
-      if (window.scrollY <= 10) {
-        setShowFloatingControls(true);
-      } else {
-        setShowFloatingControls(false);
-      }
-
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setShowFloatingControls(true);
-      }, 250);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
 
   const featuredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -234,59 +210,52 @@ export default function CollectionsPage() {
             marginBottom: 20
           }}
         >
-          <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 20 }}>
-  <button
-    type="button"
-    onClick={() => window.history.back()}
-    aria-label="Go back"
-    style={{
-      width: 44,
-      height: 44,
-      display: 'flex',
-      alignItems: 'center',
-      position: 'fixed',
-      top: '280px',
-      right: '20px',
-      justifyContent: 'center',
-      border: 'none',
-      background: 'transparent',
-      color: 'var(--text)',
-      fontSize: 32,
-      fontWeight: 700,
-      lineHeight: 1,
-      cursor: 'pointer',
-      padding: 0,
-      zIndex: 20,
-    }}
-  >
-    ←
-  </button>
+          <button
+            type="button"
+            onClick={() => window.history.back()}
+            aria-label="Go back"
+            style={{
+              width: 44,
+              height: 44,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              background: 'transparent',
+              color: 'var(--text)',
+              fontSize: 32,
+              fontWeight: 700,
+              lineHeight: 1,
+              cursor: 'pointer',
+              padding: 0
+            }}
+          >
+            ←
+          </button>
 
-  <select
-    value={sort}
-    onChange={(event) => setSort(event.target.value)}
-    aria-label="Sort products"
-    style={{
-      padding: '0px 15px',
-      width: '100px',
-      height: '33px',
-      position: 'fixed',
-      top: '280px',
-      right: '20px',
-      border: '1px solid #000000',
-      borderRadius: 4,
-      background: 'var(--bg)',
-      color: 'var(--text)',
-      display: 'block',
-      fontSize: 11,
-    }}
-  >
-    <option value="featured">Featured</option>
-    <option value="price-low">Price: Low to High</option>
-    <option value="price-high">Price: High to Low</option>
-    <option value="rating">Top Rated</option>
-  </select>
-</div>
+          <select
+            value={sort}
+            onChange={(event) => setSort(event.target.value)}
+            aria-label="Sort products"
+            style={{
+              padding: '0px 15px',
+              width: '130px',
+              height: '33px',
+              border: '1px solid #000000',
+              borderRadius: 4,
+              background: 'var(--bg)',
+              color: 'var(--text)',
+              display: 'block',
+              fontSize: 11
+            }}
+          >
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+
         {/* Single-line horizontally scrollable category bar */}
         <div
           role="tablist"
@@ -313,7 +282,7 @@ export default function CollectionsPage() {
                 whiteSpace: 'nowrap',
                 border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
                 borderRadius: '999px',
-                padding: '6px 14px',
+                padding: '6px 14px'
               }}
             >
               {item}
@@ -378,6 +347,5 @@ export default function CollectionsPage() {
         )}
       </section>
     </main>
-  );    
+  );
 }
-
