@@ -31,11 +31,12 @@ function BrandMark() {
   );
 }
 
-const navLeaves = [
+const leafChoices = [
   { label: 'Home', href: '/' },
   { label: 'Shop', href: '/collections' },
   { label: 'Our Story', href: '/#story' },
   { label: 'Journal', href: '/#journal' },
+  { label: 'Close', href: null },
 ];
 
 export default function Header() {
@@ -57,63 +58,69 @@ export default function Header() {
       }}
     >
       <style>{`
-        @keyframes leafSlideIn {
+        @keyframes bigLeafEnter {
           0% {
             opacity: 0;
-            transform: translateX(-28px) rotate(-14deg) scale(0.92);
+            transform: translateX(-80px) translateY(28px) rotate(-18deg) scale(0.78);
           }
-          70% {
+          68% {
             opacity: 1;
-            transform: translateX(4px) rotate(2deg) scale(1.02);
+            transform: translateX(8px) translateY(-2px) rotate(2deg) scale(1.03);
           }
           100% {
             opacity: 1;
-            transform: translateX(0) rotate(0deg) scale(1);
+            transform: translateX(0) translateY(0) rotate(0deg) scale(1);
           }
         }
 
-        .leaf-menu-drawer {
+        .leaf-screen-overlay {
           position: fixed;
-          top: 68px;
-          left: 14px;
-          width: min(280px, calc(100vw - 28px));
+          inset: 0;
+          padding: 84px 20px 28px;
+          background: rgba(12, 34, 24, 0.72);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          z-index: 9999;
           display: flex;
           flex-direction: column;
-          gap: 10px;
-          padding: 14px;
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.98);
-          border: 1px solid rgba(27, 67, 50, 0.16);
-          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
-          z-index: 9999;
+          justify-content: center;
+          gap: 14px;
+          overflow-y: auto;
         }
 
-        .leaf-nav-item {
+        .big-leaf-btn {
+          position: relative;
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 11px 16px;
+          justify-content: space-between;
+          width: 100%;
+          min-height: 68px;
+          padding: 16px 24px;
           text-decoration: none;
-          font-weight: 600;
-          font-size: 14px;
-          color: #102a1e;
-          background: linear-gradient(135deg, #d8f3dc 0%, #95d5b2 55%, #74c69d 100%);
-          border: 1px solid #40916c;
-          border-radius: 4px 22px 6px 22px;
-          box-shadow: 0 6px 14px rgba(27, 67, 50, 0.14);
-          animation: leafSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
-          transition: transform 0.2s ease, background 0.2s ease;
+          font-size: 20px;
+          font-weight: 700;
+          color: #0b2419;
+          background: linear-gradient(125deg, #d8f3dc 0%, #74c69d 52%, #2d6a4f 100%);
+          border: 2px solid #95d5b2;
+          border-radius: 8px 56px 10px 56px;
+          box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+          cursor: pointer;
+          animation: bigLeafEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+          transition: transform 0.22s ease, filter 0.22s ease;
         }
 
-        .leaf-nav-item:hover {
-          transform: translateX(5px);
-          background: linear-gradient(135deg, #b7e4c7 0%, #74c69d 60%, #52b788 100%);
+        .big-leaf-btn:hover {
+          transform: translateX(8px) scale(1.01);
+          filter: brightness(1.05);
         }
 
-        .leaf-nav-item::before {
-          content: '🍃';
-          font-size: 15px;
-          line-height: 1;
+        .big-leaf-num {
+          font-size: 13px;
+          font-weight: 800;
+          padding: 4px 10px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.78);
+          color: #1b4332;
         }
       `}</style>
 
@@ -187,18 +194,40 @@ export default function Header() {
       </nav>
 
       {mobileMenu && (
-        <div className="leaf-menu-drawer" role="menu" aria-label="Leaf navigation menu">
-          {navLeaves.map((item, idx) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="leaf-nav-item"
-              style={{ animationDelay: `${idx * 75}ms` }}
-              onClick={() => setMobileMenu(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div
+          className="leaf-screen-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Leaf navigation options"
+        >
+          {leafChoices.map((item, idx) =>
+            item.href ? (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="big-leaf-btn"
+                style={{ animationDelay: `${idx * 90}ms` }}
+                onClick={() => setMobileMenu(false)}
+              >
+                <span>🍃 {item.label}</span>
+                <span className="big-leaf-num">{idx + 1}</span>
+              </Link>
+            ) : (
+              <button
+                key={item.label}
+                type="button"
+                className="big-leaf-btn"
+                style={{
+                  animationDelay: `${idx * 90}ms`,
+                  background: 'linear-gradient(125deg, #e9f5db 0%, #b7e4c7 55%, #52b788 100%)',
+                }}
+                onClick={() => setMobileMenu(false)}
+              >
+                <span>🌿 {item.label}</span>
+                <span className="big-leaf-num">{idx + 1}</span>
+              </button>
+            )
+          )}
         </div>
       )}
 
