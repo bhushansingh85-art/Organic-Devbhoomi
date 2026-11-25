@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import {
   ShoppingBag,
   ArrowRight,
@@ -21,8 +22,8 @@ import {
 import Header from './components/Header';
 import { useTheme } from './context/ThemeContext';
 
-const SPLASH_EMBED_URL =
-  'https://lottie.host/embed/9c113b04-d4aa-42bd-947c-77154f51b6cf/2SV0O31VCy.lottie';
+const SPLASH_LOTTIE_URL =
+  'https://lottie.host/9c113b04-d4aa-42bd-947c-77154f51b6cf/2SV0O31VCy.lottie';
 
 function BrandMark() {
   return (
@@ -66,7 +67,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    },7000);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -105,13 +106,13 @@ export default function Home() {
               color: dark ? '#f4f6f2' : '#182218',
             }}
           >
-            <iframe
-              src={SPLASH_EMBED_URL}
-              title="Loading animation"
+            <DotLottieReact
+              src={SPLASH_LOTTIE_URL}
+              loop
+              autoplay
               style={{
                 width: 240,
                 height: 240,
-                border: 'none',
                 background: 'transparent',
               }}
             />
