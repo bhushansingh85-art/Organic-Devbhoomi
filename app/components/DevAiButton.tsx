@@ -14,7 +14,7 @@ export default function DevAiButton() {
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     {
       role: "model",
-      text: "नमस्ते! मैं Dev AI हूँ। Organic Devbhoomi के पौधों, सीज़नल उत्पाद या किसी भी सवाल में मैं आपकी कैसे मदद कर सकता हूँ?",
+      text: "नमस्ते! मैं DevAi हूँ। Organic Devbhoomi के पौधों, सीज़नल उत्पाद या किसी भी सवाल में मैं आपकी कैसे मदद कर सकता हूँ?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -73,96 +73,15 @@ export default function DevAiButton() {
 
   return (
     <>
-      <style jsx>{`
-        @keyframes devai-heavy-green-glow {
-          0%,
-          100% {
-            box-shadow:
-              0 0 18px rgba(34, 197, 94, 0.85),
-              0 0 36px rgba(22, 163, 74, 0.75),
-              0 0 58px rgba(74, 222, 128, 0.55),
-              0 10px 25px rgba(0, 0, 0, 0.55);
-          }
-          50% {
-            box-shadow:
-              0 0 24px rgba(74, 222, 128, 1),
-              0 0 46px rgba(34, 197, 94, 0.88),
-              0 0 72px rgba(134, 239, 172, 0.68),
-              0 12px 28px rgba(0, 0, 0, 0.65);
-          }
-        }
-
-        @keyframes devai-border-flow {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-
-        .devai-round-orb {
-          position: fixed;
-          bottom: 88px;
-          right: 20px;
-          z-index: 9990;
-          width: 58px;
-          height: 58px;
-          padding: 2.5px;
-          border-radius: 9999px;
-          background: linear-gradient(135deg, #86efac, #22c55e, #15803d, #4ade80, #86efac);
-          background-size: 250% 250%;
-          animation:
-            devai-border-flow 4s ease infinite,
-            devai-heavy-green-glow 2.4s ease-in-out infinite;
-          transition: transform 0.22s ease;
-        }
-
-        .devai-round-orb:hover {
-          transform: translateY(-3px) scale(1.06);
-        }
-
-        .devai-round-orb:active {
-          transform: scale(0.95);
-        }
-
-        .devai-newpage-shell {
-          position: fixed;
-          z-index: 9995;
-          background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), transparent 45%),
-            linear-gradient(180deg, #071911 0%, #09130f 55%, #060b09 100%);
-          box-shadow:
-            0 25px 70px rgba(0, 0, 0, 0.75),
-            0 0 35px rgba(34, 197, 94, 0.25);
-        }
-      `}</style>
-
-      {/* गोल बटन + हैवी ग्रीन ग्लो */}
+      {/* राउंड बटन + हैवी ग्रीन ग्लो (सिर्फ DevAi टेक्स्ट, कोई लोगो नहीं) */}
       <div className="devai-round-orb">
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          aria-label={isOpen ? "Close Dev AI" : "Open Dev AI"}
-          title="Dev AI"
-          className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-emerald-800 via-green-950 to-zinc-950 text-emerald-200 cursor-pointer select-none"
+          aria-label={isOpen ? "Close DevAi" : "Open DevAi"}
+          className="devai-round-btn"
         >
-          <span className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-green-400/60" />
-          <svg
-            className="h-6 w-6 text-green-300 drop-shadow-[0_0_8px_rgba(74,222,128,0.9)]"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-          </svg>
-          <span className="sr-only">Dev AI</span>
+          DevAi
         </button>
       </div>
 
@@ -171,39 +90,24 @@ export default function DevAiButton() {
         <div className="devai-newpage-shell inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 flex flex-col overflow-hidden text-white">
           {/* टॉप बार */}
           <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-green-950/90 via-emerald-950/80 to-zinc-950 border-b border-green-500/25">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/15 border border-green-400/40 shadow-[0_0_16px_rgba(34,197,94,0.45)] text-green-300">
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z" />
-                </svg>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-semibold text-base text-green-50 tracking-wide">
+                  DevAi Workspace
+                </h2>
+                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-400/30">
+                  Live
+                </span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="font-semibold text-base text-green-50 tracking-wide">
-                    Dev AI Workspace
-                  </h2>
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-400/30">
-                    Live
-                  </span>
-                </div>
-                <p className="text-xs text-green-300/75 mt-0.5">
-                  Organic Devbhoomi • स्मार्ट असिस्टेंट
-                </p>
-              </div>
+              <p className="text-xs text-green-300/75 mt-0.5">
+                Organic Devbhoomi • स्मार्ट असिस्टेंट
+              </p>
             </div>
 
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              aria-label="Close Dev AI Interface"
+              aria-label="Close DevAi Interface"
               className="h-9 w-9 rounded-full bg-white/5 hover:bg-green-500/20 border border-white/10 hover:border-green-400/40 text-green-100 hover:text-white flex items-center justify-center text-sm transition cursor-pointer"
             >
               ✕
