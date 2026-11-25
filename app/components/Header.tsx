@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Moon, Sun, UserRound } from 'lucide-react';
+import { Search, Basket, Moon, Sun, UserRound } from 'lucide-react';
 
 type HeaderProps = {
   cartCount?: number;
