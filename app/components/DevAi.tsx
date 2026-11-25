@@ -6,18 +6,23 @@ import { GoogleGenAI } from "@google/genai";
 export default function DevAi() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
-    { role: "model", text: "नमस्ते! मैं Dev AI हूँ। बताइए मैं आपकी क्या मदद कर सकता हूँ?" }
+    { role: "model", text: "नमस्ते! मैं Dev AI हूँ। बताइए मैं आपकी क्या मदद कर सकता हूँ?" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const ai = new GoogleGenAI({
-    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-  });
-
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
+
+    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    if (!apiKey) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: "कृपया पहले NEXT_PUBLIC_GEMINI_API_KEY सेट करें।" },
+      ]);
+      return;
+    }
 
     const userText = input.trim();
     const updatedMessages = [...messages, { role: "user" as const, text: userText }];
@@ -26,6 +31,7 @@ export default function DevAi() {
     setIsLoading(true);
 
     try {
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
         contents: updatedMessages.map((msg) => ({
@@ -55,32 +61,43 @@ export default function DevAi() {
 
   return (
     <>
-      {/* स्क्रीन पर तैरता हुआ Dev AI बटन */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         style={{
+          position: "fixed",
+          top: "50%",
+          right: "24px",
+          transform: "translateY(-50%)",
+          zIndex: 9999,
           borderRadius: "25px",
           boxShadow: "0 0 18px rgba(59, 130, 246, 0.8), 0 0 35px rgba(147, 51, 234, 0.6)",
         }}
-        className="fixed top-1/2 -translate-y-1/2 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-3.5 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 animate-pulse hover:animate-none cursor-pointer border border-white/20"
+        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-3.5 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
       >
         <span className="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#67e8f9]" />
         <span>Dev AI</span>
       </button>
 
-      {/* चैट बॉक्स */}
       {isOpen && (
         <div
-          style={{ borderRadius: "20px" }}
-          className="fixed top-1/2 -translate-y-1/2 right-28 z-50 w-80 sm:w-96 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 shadow-2xl overflow-hidden text-white"
+          style={{
+            position: "fixed",
+            top: "50%",
+            right: "112px",
+            transform: "translateY(-50%)",
+            zIndex: 9999,
+            borderRadius: "20px",
+          }}
+          className="w-80 sm:w-96 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 shadow-2xl overflow-hidden text-white"
         >
-          {/* हेडर */}
           <div className="flex items-center justify-between bg-gradient-to-r from-blue-600/20 to-purple-600/20 px-4 py-3 border-b border-zinc-800">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-green-400 animate-ping" />
               <h3 className="font-semibold text-sm">Dev AI Assistant</h3>
             </div>
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="text-zinc-400 hover:text-white text-lg leading-none cursor-pointer"
             >
@@ -88,7 +105,6 @@ export default function DevAi() {
             </button>
           </div>
 
-          {/* मैसेज एरिया */}
           <div ref={scrollRef} className="h-64 p-4 overflow-y-auto text-sm text-zinc-300 space-y-3">
             {messages.map((msg, idx) => (
               <div
@@ -109,7 +125,6 @@ export default function DevAi() {
             )}
           </div>
 
-          {/* इनपुट बॉक्स */}
           <div className="p-3 border-t border-zinc-800 flex gap-2">
             <input
               type="text"
@@ -120,6 +135,7 @@ export default function DevAi() {
               className="flex-1 bg-zinc-800 text-sm text-white px-3.5 py-2 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <button
+              type="button"
               onClick={sendMessage}
               disabled={isLoading}
               className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-full text-sm font-medium transition cursor-pointer disabled:opacity-50"
