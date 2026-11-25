@@ -1,15 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ShoppingBag,
   ArrowRight,
-  Star,
-  Plus,
-  Minus,
-  Trash2,
   Heart,
   Truck,
   ShieldCheck,
@@ -21,18 +17,9 @@ import {
   Sprout,
   X,
   Leaf,
-  Flower2,
-  Apple,
 } from 'lucide-react';
 import Header from './components/Header';
 import { useTheme } from './context/ThemeContext';
-
-const categories = [
-  { name: 'All', icon: Sprout },
-  { name: 'Plants', icon: Leaf },
-  { name: 'Fresh Fruits', icon: Apple },
-  { name: 'Flowers & Seeds', icon: Flower2 },
-];
 
 function BrandMark() {
   return (
@@ -63,41 +50,16 @@ function BrandMark() {
 
 export default function Home() {
   const { dark } = useTheme();
-  const [category, setCategory] = useState('All');
-  const [query, setQuery] = useState('');
   const [cartOpen, setCartOpen] = useState(false);
-  const [cart, setCart] = useState<Record<number, number>>({});
+  const [cart] = useState<Record<number, number>>({});
   const [mobileMenu, setMobileMenu] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatText, setChatText] = useState('');
   const [chatMessages, setChatMessages] = useState<string[]>([
     'Hi! I’m Dev AI 🌿 How can I help you find something from nature today?',
   ]);
-  const [wishlist, setWishlist] = useState<number[]>([]);
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-
-  const visible = useMemo(
-    () =>
-      products.filter(
-        (p) =>
-          (category === 'All' || p.category === category) &&
-          p.name.toLowerCase().includes(query.toLowerCase())
-      ),
-    [category, query]
-  );
 
   const count = Object.values(cart).reduce((a, b) => a + b, 0);
-  const subtotal = products.reduce((sum, p) => sum + p.price * (cart[p.id] || 0), 0);
-
-  const add = (id: number) => setCart((old) => ({ ...old, [id]: (old[id] || 0) + 1 }));
-  const change = (id: number, delta: number) =>
-    setCart((old) => {
-      const n = (old[id] || 0) + delta;
-      const next = { ...old };
-      if (n <= 0) delete next[id];
-      else next[id] = n;
-      return next;
-    });
 
   const sendChat = () => {
     if (!chatText.trim()) return;
@@ -116,10 +78,10 @@ export default function Home() {
         <span className="announce-right">Thoughtfully grown. Naturally yours.</span>
       </div>
 
-     <Header
-  cartCount={count}
-  onOpenCart={() => setCartOpen(true)}
-/>
+      <Header
+        cartCount={count}
+        onOpenCart={() => setCartOpen(true)}
+      />
 
       <AnimatePresence>
         {mobileMenu && (
@@ -222,7 +184,7 @@ export default function Home() {
             <small>A little greener every day</small>
           </span>
         </div>
-      </section>      
+      </section>
 
       <section className="seasonal">
         <div className="seasonal-photo" />
@@ -431,133 +393,21 @@ export default function Home() {
                   <X />
                 </button>
               </div>
-              {count === 0 ? (
-                <div className="cart-empty">
-                  <div className="empty-bag">
-                    <ShoppingBag size={30} />
-                  </div>
-                  <h3>Your basket is taking a little nap.</h3>
-                  <p>Add something lovely from nature to wake it up.</p>
-                  <Link
-                    className="primary-btn"
-                    href="/collections"
-                    onClick={() => setCartOpen(false)}
-                  >
-                    Explore products <ArrowRight size={16} />
-                  </Link>
+              <div className="cart-empty">
+                <div className="empty-bag">
+                  <ShoppingBag size={30} />
                 </div>
-              ) : (
-                <>
-                  <div className="cart-items">
-                    {products
-                      .filter((p) => cart[p.id])
-                      .map((p) => (
-                        <div className="cart-item" key={p.id}>
-                          <img src={p.image} alt={p.name} />
-                          <div className="cart-item-info">
-                            <b>{p.name}</b>
-                            <small>
-                              ₹{p.price} / {p.unit}
-                            </small>
-                            <div className="qty">
-                              <button onClick={() => change(p.id, -1)}>
-                                <Minus size={13} />
-                              </button>
-                              <span>{cart[p.id]}</span>
-                              <button onClick={() => change(p.id, 1)}>
-                                <Plus size={13} />
-                              </button>
-                            </div>
-                          </div>
-                          <strong>₹{p.price * cart[p.id]}</strong>
-                          <button
-                            className="remove"
-                            onClick={() =>
-                              setCart((old) => {
-                                const n = { ...old };
-                                delete n[p.id];
-                                return n;
-                              })
-                            }
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                  <div className="drawer-summary">
-                    <div>
-                      <span>Subtotal</span>
-                      <b>₹{subtotal}</b>
-                    </div>
-                    <small>Delivery charges calculated at checkout.</small>
-                    <button
-                      className="checkout-btn"
-                      onClick={() =>
-                        alert(
-                          'Checkout preview. Firebase, address validation and payment gateway must be connected before accepting real orders.'
-                        )
-                      }
-                    >
-                      Continue to checkout <ArrowRight size={17} />
-                    </button>
-                    <p>
-                      <ShieldCheck size={14} /> Secure checkout experience
-                    </p>
-                  </div>
-                </>
-              )}
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {activeProduct && (
-          <>
-            <motion.div
-              className="drawer-scrim"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveProduct(null)}
-            />
-            <motion.div
-              className="product-modal"
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20 }}
-            >
-              <button className="modal-close icon-btn" onClick={() => setActiveProduct(null)}>
-                <X />
-              </button>
-              <img src={activeProduct.image} alt={activeProduct.name} />
-              <div className="modal-copy">
-                <span className="eyebrow">{activeProduct.category}</span>
-                <h2>{activeProduct.name}</h2>
-                <div className="rating">
-                  <Star size={14} fill="currentColor" /> {activeProduct.rating} (
-                  {activeProduct.reviews} reviews)
-                </div>
-                <h3>
-                  ₹{activeProduct.price} <small>/ {activeProduct.unit}</small>
-                </h3>
-                <p>{activeProduct.description}</p>
-                <div className="availability">
-                  <span /> In stock · Estimated delivery shown at checkout
-                </div>
-                <button
+                <h3>Your basket is taking a little nap.</h3>
+                <p>Add something lovely from nature to wake it up.</p>
+                <Link
                   className="primary-btn"
-                  onClick={() => {
-                    add(activeProduct.id);
-                    setActiveProduct(null);
-                    setCartOpen(true);
-                  }}
+                  href="/collections"
+                  onClick={() => setCartOpen(false)}
                 >
-                  Add to basket <ShoppingBag size={17} />
-                </button>
+                  Explore products <ArrowRight size={16} />
+                </Link>
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
