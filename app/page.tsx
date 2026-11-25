@@ -22,7 +22,7 @@ import Header from './components/Header';
 import { useTheme } from './context/ThemeContext';
 
 const SPLASH_EMBED_URL =
-  'https://lottie.host/embed/9c113b04-d4aa-42bd-947c-77154f51b6cf/2SV0O31VCy.lottie';
+  'https://lottie.host/9c113b04-d4aa-42bd-947c-77154f51b6cf/2SV0O31VCy.lottie';
 
 function BrandMark() {
   return (
