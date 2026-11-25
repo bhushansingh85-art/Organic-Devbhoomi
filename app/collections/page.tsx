@@ -2,7 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ArrowRight,
+  Star,
+  ShoppingBag,
+  Plus,
+  Minus,
+  Trash2,
+  ShieldCheck,
+  X,
+} from 'lucide-react';
 import Header from '../components/Header';
 
 type Product = {
@@ -212,7 +222,15 @@ function matchesCategoryFilter(product: Product, selectedCategory: string): bool
   return product.category === selectedCategory;
 }
 
-function ProductCard({ product, palette }: { product: Product; palette: ThemePalette }) {
+function ProductCard({
+  product,
+  palette,
+  onAdd
+}: {
+  product: Product;
+  palette: ThemePalette;
+  onAdd: (id: number) => void;
+}) {
   return (
     <article
       className="product-card"
@@ -302,7 +320,8 @@ function ProductCard({ product, palette }: { product: Product; palette: ThemePal
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            flexWrap: 'wrap'
           }}
         >
           <div style={{ color: palette.pageText }}>
@@ -315,23 +334,45 @@ function ProductCard({ product, palette }: { product: Product; palette: ThemePal
             )}
           </div>
 
-          <Link
-            href={`/products/${product.id}`}
-            className="add-btn"
-            style={{
-              textDecoration: 'none',
-              backgroundColor: palette.accentBg,
-              color: palette.accentText,
-              borderRadius: '999px',
-              padding: '6px 12px',
-              fontSize: '12px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            View Details <ArrowRight size={13} />
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              type="button"
+              onClick={() => onAdd(product.id)}
+              style={{
+                backgroundColor: palette.accentBg,
+                color: palette.accentText,
+                border: 'none',
+                borderRadius: '999px',
+                padding: '6px 11px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Plus size={13} /> Add
+            </button>
+
+            <Link
+              href={`/products/${product.id}`}
+              className="add-btn"
+              style={{
+                textDecoration: 'none',
+                backgroundColor: palette.controlBg,
+                color: palette.pageText,
+                border: `1px solid ${palette.controlBorder}`,
+                borderRadius: '999px',
+                padding: '5px 10px',
+                fontSize: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              Details <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
       </div>
     </article>
@@ -345,8 +386,30 @@ export default function CollectionsPage() {
   const [category, setCategory] = useState('All');
   const [query] = useState('');
   const [sort, setSort] = useState('featured');
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cart, setCart] = useState<Record<number, number>>({});
 
   const normalizedQuery = query.trim().toLowerCase();
+
+  const count = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal = products.reduce(
+    (sum, p) => sum + p.price * (cart[p.id] || 0),
+    0
+  );
+
+  const add = (id: number) => {
+    setCart((old) => ({ ...old, [id]: (old[id] || 0) + 1 }));
+    setCartOpen(true);
+  };
+
+  const change = (id: number, delta: number) =>
+    setCart((old) => {
+      const n = (old[id] || 0) + delta;
+      const next = { ...old };
+      if (n <= 0) delete next[id];
+      else next[id] = n;
+      return next;
+    });
 
   const featuredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -383,7 +446,11 @@ export default function CollectionsPage() {
         transition: 'background-color 0.2s ease, color 0.2s ease'
       }}
     >
-      <Header />
+      <Header
+        cartCount={count}
+        onOpenCart={() => setCartOpen(true)}
+      />
+
       <section className="section-wrap collection-section">
         <div className="section-heading">
           <div>
@@ -523,6 +590,7 @@ export default function CollectionsPage() {
                   key={`featured-${product.id}`}
                   product={product}
                   palette={palette}
+                  onAdd={add}
                 />
               ))}
             </div>
@@ -546,7 +614,12 @@ export default function CollectionsPage() {
         {visibleProducts.length > 0 ? (
           <div className="product-grid">
             {visibleProducts.map((product) => (
-              <ProductCard key={product.id} product={product} palette={palette} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                palette={palette}
+                onAdd={add}
+              />
             ))}
           </div>
         ) : (
@@ -563,6 +636,113 @@ export default function CollectionsPage() {
           </div>
         )}
       </section>
+
+      <AnimatePresence>
+        {cartOpen && (
+          <>
+            <motion.div
+              className="drawer-scrim"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setCartOpen(false)}
+            />
+            <motion.aside
+              className="cart-drawer"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+            >
+              <div className="drawer-head">
+                <div>
+                  <h2>
+                    Your basket <span>({count})</span>
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setCartOpen(false)}
+                >
+                  <X />
+                </button>
+              </div>
+              {count === 0 ? (
+                <div className="cart-empty">
+                  <div className="empty-bag">
+                    <ShoppingBag size={30} />
+                  </div>
+                  <h3>Your basket is taking a little nap.</h3>
+                  <p>Add something lovely from nature to wake it up.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="cart-items">
+                    {products
+                      .filter((p) => cart[p.id])
+                      .map((p) => (
+                        <div className="cart-item" key={p.id}>
+                          <img src={p.image} alt={p.name} />
+                          <div className="cart-item-info">
+                            <b>{p.name}</b>
+                            <small>
+                              ₹{p.price} / {p.unit}
+                            </small>
+                            <div className="qty">
+                              <button type="button" onClick={() => change(p.id, -1)}>
+                                <Minus size={13} />
+                              </button>
+                              <span>{cart[p.id]}</span>
+                              <button type="button" onClick={() => change(p.id, 1)}>
+                                <Plus size={13} />
+                              </button>
+                            </div>
+                          </div>
+                          <strong>₹{p.price * cart[p.id]}</strong>
+                          <button
+                            type="button"
+                            className="remove"
+                            onClick={() =>
+                              setCart((old) => {
+                                const n = { ...old };
+                                delete n[p.id];
+                                return n;
+                              })
+                            }
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                  <div className="drawer-summary">
+                    <div>
+                      <span>Subtotal</span>
+                      <b>₹{subtotal}</b>
+                    </div>
+                    <small>Delivery charges calculated at checkout.</small>
+                    <button
+                      type="button"
+                      className="checkout-btn"
+                      onClick={() =>
+                        alert(
+                          'Checkout preview. Connect payment gateway before accepting real orders.'
+                        )
+                      }
+                    >
+                      Continue to checkout <ArrowRight size={17} />
+                    </button>
+                    <p>
+                      <ShieldCheck size={14} /> Secure checkout experience
+                    </p>
+                  </div>
+                </>
+              )}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
