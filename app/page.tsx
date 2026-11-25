@@ -101,7 +101,7 @@ export default function Home() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: dark ? '#0f1410' : '#f7f5ef',
+              backgroundColor: dark ? 'rgba(15, 20, 16, 0.5)' : 'rgba(247, 245, 239, 0.5)',
               color: dark ? '#f4f6f2' : '#182218',
             }}
           >
