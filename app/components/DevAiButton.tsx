@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { GoogleGenAI } from "@google/genai";
 
 const QUICK_PROMPTS = [
@@ -72,7 +73,6 @@ export default function DevAiPage() {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white flex flex-col">
-      {/* टॉप बार */}
       <header className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-green-950/90 via-emerald-950/80 to-zinc-950 border-b border-green-500/25">
         <div>
           <div className="flex items-center gap-2">
@@ -87,18 +87,21 @@ export default function DevAiPage() {
             Organic Devbhoomi • स्मार्ट असिस्टेंट
           </p>
         </div>
+
+        <Link
+          href="/"
+          className="text-xs px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-green-500/20 border border-white/10 hover:border-green-400/40 text-green-100 transition"
+        >
+          ← Home
+        </Link>
       </header>
 
-      {/* क्विक सुझाव */}
       <div className="px-4 sm:px-6 py-3 bg-green-950/35 border-b border-green-500/15 flex gap-2 overflow-x-auto no-scrollbar">
         {QUICK_PROMPTS.map((item) => (
           <button
             key={item}
             type="button"
-            onClick={() => {
-              console.log("Quick prompt clicked:", item);
-              sendMessage(item);
-            }}
+            onClick={() => sendMessage(item)}
             disabled={isLoading}
             className="shrink-0 text-xs px-3.5 py-1.5 rounded-full bg-green-950/80 hover:bg-green-900/80 text-green-200 border border-green-500/30 transition cursor-pointer disabled:opacity-50"
           >
@@ -107,7 +110,6 @@ export default function DevAiPage() {
         ))}
       </div>
 
-      {/* मैसेज एरिया */}
       <div
         ref={scrollRef}
         className="flex-1 w-full max-w-4xl mx-auto p-4 sm:p-6 overflow-y-auto text-sm space-y-3.5"
@@ -131,7 +133,6 @@ export default function DevAiPage() {
         )}
       </div>
 
-      {/* इनपुट बार */}
       <div className="p-3.5 sm:p-4 border-t border-green-500/25 bg-black/50">
         <div className="max-w-4xl mx-auto flex items-center gap-2.5">
           <input
@@ -144,10 +145,7 @@ export default function DevAiPage() {
           />
           <button
             type="button"
-            onClick={() => {
-              console.log("Send button clicked");
-              sendMessage();
-            }}
+            onClick={() => sendMessage()}
             disabled={isLoading}
             className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-zinc-950 px-5 py-2.5 rounded-full text-sm font-semibold shadow-[0_0_18px_rgba(34,197,94,0.45)] transition cursor-pointer disabled:opacity-50"
           >
