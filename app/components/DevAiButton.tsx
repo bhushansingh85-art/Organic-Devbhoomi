@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleGenAI } from "@google/genai";
 
-export default function DevAi() {
+export default function DevAiButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     { role: "model", text: "नमस्ते! मैं Dev AI हूँ। बताइए मैं आपकी क्या मदद कर सकता हूँ?" },
@@ -19,7 +19,7 @@ export default function DevAi() {
     if (!apiKey) {
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: "कृपया पहले NEXT_PUBLIC_GEMINI_API_KEY सेट करें।" },
+        { role: "model", text: "कृपया NEXT_PUBLIC_GEMINI_API_KEY सेट करें।" },
       ]);
       return;
     }
@@ -61,31 +61,35 @@ export default function DevAi() {
 
   return (
     <>
+      {/* बॉटम नेव के ठीक ऊपर एक जगह फिक्स बटन */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         style={{
           position: "fixed",
-          top: "50%",
-          right: "24px",
-          transform: "translateY(-50%)",
+          bottom: "88px",
+          right: "20px",
+          left: "auto",
+          top: "auto",
           zIndex: 9999,
           borderRadius: "25px",
           boxShadow: "0 0 18px rgba(59, 130, 246, 0.8), 0 0 35px rgba(147, 51, 234, 0.6)",
         }}
-        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-3.5 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-5 py-3 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
       >
         <span className="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#67e8f9]" />
         <span>Dev AI</span>
       </button>
 
+      {/* चैट बॉक्स (बटन के ठीक ऊपर फिक्स) */}
       {isOpen && (
         <div
           style={{
             position: "fixed",
-            top: "50%",
-            right: "112px",
-            transform: "translateY(-50%)",
+            bottom: "152px",
+            right: "20px",
+            left: "auto",
+            top: "auto",
             zIndex: 9999,
             borderRadius: "20px",
           }}
