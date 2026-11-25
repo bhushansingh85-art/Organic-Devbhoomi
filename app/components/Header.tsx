@@ -87,31 +87,6 @@ export default function Header() {
           overflow-y: auto;
         }
 
-        .leaf-close-top-btn {
-          position: fixed;
-          top: 18px;
-          right: 18px;
-          width: 44px;
-          height: 44px;
-          border-radius: 999px;
-          border: 1px solid rgba(255, 255, 255, 0.35);
-          background: rgba(16, 42, 30, 0.9);
-          color: #ffffff;
-          font-size: 24px;
-          line-height: 1;
-          display: grid;
-          place-items: center;
-          cursor: pointer;
-          z-index: 10001;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
-          transition: transform 0.2s ease, background-color 0.2s ease;
-        }
-
-        .leaf-close-top-btn:hover {
-          transform: scale(1.06);
-          background: #1b4332;
-        }
-
         .big-leaf-btn {
           position: relative;
           display: flex;
@@ -153,15 +128,17 @@ export default function Header() {
           alignItems: 'center',
           justifyContent: 'center',
           gap: 4.5,
-          background: mobileMenu ? '#1b4332' : '#f4f6f4',
+          background: mobileMenu ? '#f4f6f4',
           color: mobileMenu ? '#ffffff' : '#1b4332',
           border: '1px solid rgba(27, 67, 50, 0.22)',
           borderRadius: '999px',
           cursor: 'pointer',
           padding: 0,
-          position: 'relative',
-          zIndex: 10000,
-          transition: 'background-color 0.25s ease, color 0.25s ease',
+          position: mobileMenu ? 'fixed' : 'relative',
+          top: mobileMenu ? 14 : 'auto',
+          left: mobileMenu ? 14 : 'auto',
+          zIndex: 10001,
+          transition: 'background-color 0.25s ease, color 0.25s ease, top 0.25s ease',
         }}
       >
         <span
@@ -215,15 +192,6 @@ export default function Header() {
           aria-modal="true"
           aria-label="Leaf navigation options"
         >
-          <button
-            type="button"
-            className="leaf-close-top-btn"
-            aria-label="Close menu"
-            onClick={() => setMobileMenu(false)}
-          >
-            ×
-          </button>
-
           {leafChoices.map((item, idx) => (
             <Link
               key={item.label}
