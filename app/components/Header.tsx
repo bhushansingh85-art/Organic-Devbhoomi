@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Basket, Moon, Sun, UserRound } from 'lucide-react';
+import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
 
 type HeaderProps = {
   cartCount?: number;
@@ -235,7 +235,7 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           <UserRound size={19} />
         </button>
         <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
-          <ShoppingBag size={19} />
+          <ShoppingBasket size={19} />
           <span>Basket</span>
           <i>{cartCount}</i>
         </Link>
