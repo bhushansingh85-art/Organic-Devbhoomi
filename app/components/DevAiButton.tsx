@@ -5,22 +5,42 @@ import Link from "next/link";
 import { GoogleGenAI } from "@google/genai";
 
 const QUICK_PROMPTS = [
-  "हिमालयी पौधों की देखभाल कैसे करें?",
-  "सीज़नल फल और बीज कौन से उपलब्ध हैं?",
-  "ऑर्डर और डिलीवरी की जानकारी दें",
+  "How to care himachli plants?",
+  "Want to talk with owner?",
+  "Want to give Feedback?",
+  "Product information"
 ];
+
+const SYSTEM_INSTRUCTION = `
+You are DevAi, the official assistant for Organic Devbhoomi.
+Rules:
+1. Answer ONLY questions related to Organic Devbhoomi, its plants, Himachali plant care, seasonal products, feedback, or contacting the owner.
+2. If a user asks about anything outside this website or unrelated topics, politely decline and steer back to Organic Devbhoomi.
+3. For contact, phone number, or WhatsApp inquiries, share: Phone / WhatsApp: 9816632084.
+4. Keep responses helpful, clear, and concise.
+`.trim();
 
 export default function DevAiButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     {
       role: "model",
-      text: "नमस्ते! मैं DevAi हूँ। Organic Devbhoomi के पौधों, सीज़नल उत्पाद या किसी भी सवाल में मैं आपकी कैसे मदद कर सकता हूँ?",
+      text: "Hello? I am Dev Ai.How i can help you today?",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const cancelResponse = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
+    setMessages((prev) => [...prev, { role: "model", text: "Response cancelled." }]);
+  };
 
   const sendMessage = async (customText?: string) => {
     const rawText = typeof customText === "string" ? customText : input;
@@ -30,7 +50,7 @@ export default function DevAiButton() {
     if (!apiKey) {
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: "कृपया NEXT_PUBLIC_GEMINI_API_KEY सेट करें।" },
+        { role: "model", text: "Please set NEXT_PUBLIC_GEMINI_API_KEY!!! " },
       ]);
       return;
     }
@@ -43,6 +63,9 @@ export default function DevAiButton() {
     }
     setIsLoading(true);
 
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
@@ -51,17 +74,27 @@ export default function DevAiButton() {
           role: msg.role,
           parts: [{ text: msg.text }],
         })),
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          abortSignal: controller.signal,
+        },
       });
 
-      const replyText = response.text || "माफ़ कीजिए, मैं अभी जवाब नहीं दे पाया।";
+      if (controller.signal.aborted) return;
+
+      const replyText = response.text || "I'm sorry.I couldn't provide a response right now.";
       setMessages((prev) => [...prev, { role: "model", text: replyText }]);
     } catch (error) {
+      if (controller.signal.aborted) return;
       console.error("Gemini API error:", error);
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: "माफ़ कीजिए, API से कनेक्ट करने में समस्या आ रही है।" },
+        { role: "model", text: "Some issue interfacing.Please try again?" },
       ]);
     } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
       setIsLoading(false);
     }
   };
@@ -281,7 +314,7 @@ export default function DevAiButton() {
                   border: "1px solid rgba(74, 222, 128, 0.35)",
                 }}
               >
-                सोच रहा है...
+                Thinking....
               </div>
             )}
           </div>
@@ -302,7 +335,7 @@ export default function DevAiButton() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="अपना सवाल यहाँ लिखें..."
+              placeholder="Type your question here..."
               style={{
                 flex: 1,
                 minWidth: 0,
@@ -315,6 +348,24 @@ export default function DevAiButton() {
                 border: "1px solid rgba(74, 222, 128, 0.45)",
               }}
             />
+            {isLoading && (
+              <button
+                type="button"
+                onClick={cancelResponse}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: "9999px",
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  background: "#14532d",
+                  color: "#ffffff",
+                  border: "1px solid rgba(74, 222, 128, 0.45)",
+                  flexShrink: 0,
+                }}
+              >
+                Cancel
+              </button>
+            )}
             <button
               type="button"
               onClick={() => sendMessage()}
@@ -331,7 +382,7 @@ export default function DevAiButton() {
                 opacity: isLoading ? 0.5 : 1,
               }}
             >
-              भेजें
+              Send
             </button>
           </div>
         </div>
