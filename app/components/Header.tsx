@@ -4,6 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingBag, Moon, Sun, UserRound } from 'lucide-react';
 
+type HeaderProps = {
+  cartCount?: number;
+  onOpenCart?: () => void;
+};
+
 function BrandMark() {
   return (
     <div className="brand-mark" aria-hidden="true">
@@ -38,10 +43,17 @@ const leafChoices = [
   { label: 'Journal', href: '/#journal' },
 ];
 
-export default function Header() {
+export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
   const [dark, setDark] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [query, setQuery] = useState('');
+
+  const handleBasketClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onOpenCart) {
+      e.preventDefault();
+      onOpenCart();
+    }
+  };
 
   return (
     <header
@@ -222,10 +234,10 @@ export default function Header() {
         <button className="icon-btn account-btn">
           <UserRound size={19} />
         </button>
-        <Link className="cart-trigger" href="/cart">
+        <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
           <ShoppingBag size={19} />
           <span>Basket</span>
-          <i>0</i>
+          <i>{cartCount}</i>
         </Link>
       </div>
     </header>
