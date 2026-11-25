@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
 import Header from '../components/Header';
@@ -99,6 +99,108 @@ const products: Product[] = [
 
 const categories = ['All', 'Plants', 'Fresh Fruits', 'Flowers & Seeds', 'More', 'Best Value'];
 
+type ThemePalette = {
+  pageBg: string;
+  pageText: string;
+  mutedText: string;
+  cardBg: string;
+  cardBorder: string;
+  imageBg: string;
+  controlBg: string;
+  controlBorder: string;
+  badgeBg: string;
+  badgeText: string;
+  badgeBorder: string;
+  accentBg: string;
+  accentText: string;
+  dividerColor: string;
+  emptyBg: string;
+};
+
+const lightPalette: ThemePalette = {
+  pageBg: '#ffffff',
+  pageText: '#111827',
+  mutedText: '#4b5563',
+  cardBg: '#ffffff',
+  cardBorder: '#e5e7eb',
+  imageBg: '#f3f4f6',
+  controlBg: '#ffffff',
+  controlBorder: '#cbd5e1',
+  badgeBg: '#ecfdf5',
+  badgeText: '#1b4332',
+  badgeBorder: '#a7f3d0',
+  accentBg: '#1b4332',
+  accentText: '#ffffff',
+  dividerColor: 'rgba(0, 0, 0, 0.08)',
+  emptyBg: '#f9fafb'
+};
+
+const darkPalette: ThemePalette = {
+  pageBg: '#0b0f0c',
+  pageText: '#f3f4f6',
+  mutedText: '#9ca3af',
+  cardBg: '#141c17',
+  cardBorder: '#26332b',
+  imageBg: '#1b261f',
+  controlBg: '#141c17',
+  controlBorder: '#2f3f35',
+  badgeBg: '#132a1e',
+  badgeText: '#86efac',
+  badgeBorder: '#234d36',
+  accentBg: '#2d6a4f',
+  accentText: '#ffffff',
+  dividerColor: 'rgba(255, 255, 255, 0.12)',
+  emptyBg: '#141c17'
+};
+
+function useIsDarkTheme(): boolean {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const htmlEl = document.documentElement;
+      const bodyEl = document.body;
+      const hasDarkClass =
+        htmlEl.classList.contains('dark') || bodyEl.classList.contains('dark');
+      const dataTheme =
+        htmlEl.getAttribute('data-theme') || bodyEl.getAttribute('data-theme');
+      const prefersDark =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (dataTheme === 'dark') {
+        setIsDark(true);
+      } else if (dataTheme === 'light') {
+        setIsDark(false);
+      } else {
+        setIsDark(hasDarkClass || prefersDark);
+      }
+    };
+
+    checkTheme();
+
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme']
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme']
+    });
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', checkTheme);
+
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener('change', checkTheme);
+    };
+  }, []);
+
+  return isDark;
+}
+
 function matchesCategoryFilter(product: Product, selectedCategory: string): boolean {
   if (selectedCategory === 'All') return true;
   if (selectedCategory === 'Best Value') {
@@ -110,17 +212,17 @@ function matchesCategoryFilter(product: Product, selectedCategory: string): bool
   return product.category === selectedCategory;
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, palette }: { product: Product; palette: ThemePalette }) {
   return (
     <article
       className="product-card"
       style={{
-        backgroundColor: '#ffffff',
-        color: '#111827',
-        border: '1px solid #e5e7eb',
+        backgroundColor: palette.cardBg,
+        color: palette.pageText,
+        border: `1px solid ${palette.cardBorder}`,
         borderRadius: '14px',
         overflow: 'hidden',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)'
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)'
       }}
     >
       <Link
@@ -129,7 +231,7 @@ function ProductCard({ product }: { product: Product }) {
         style={{
           display: 'block',
           position: 'relative',
-          backgroundColor: '#f3f4f6'
+          backgroundColor: palette.imageBg
         }}
       >
         <img
@@ -146,9 +248,9 @@ function ProductCard({ product }: { product: Product }) {
           <span
             className="product-tag"
             style={{
-              backgroundColor: '#ecfdf5',
-              color: '#1b4332',
-              border: '1px solid #a7f3d0'
+              backgroundColor: palette.badgeBg,
+              color: palette.badgeText,
+              border: `1px solid ${palette.badgeBorder}`
             }}
           >
             {product.tag}
@@ -159,15 +261,15 @@ function ProductCard({ product }: { product: Product }) {
       <div
         className="product-info"
         style={{
-          backgroundColor: '#ffffff',
-          color: '#111827',
+          backgroundColor: palette.cardBg,
+          color: palette.pageText,
           padding: '14px'
         }}
       >
         <div
           className="product-meta"
           style={{
-            color: '#4b5563',
+            color: palette.mutedText,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -178,7 +280,7 @@ function ProductCard({ product }: { product: Product }) {
           <span
             className="rating"
             style={{
-              color: '#b45309',
+              color: '#d97706',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px'
@@ -186,11 +288,11 @@ function ProductCard({ product }: { product: Product }) {
           >
             <Star size={11} fill="currentColor" />
             {product.rating}
-            <small style={{ color: '#6b7280' }}>({product.reviews})</small>
+            <small style={{ color: palette.mutedText }}>({product.reviews})</small>
           </span>
         </div>
 
-        <h3 style={{ color: '#111827', margin: '6px 0 10px' }}>
+        <h3 style={{ color: palette.pageText, margin: '6px 0 10px' }}>
           {product.name}
         </h3>
 
@@ -203,11 +305,11 @@ function ProductCard({ product }: { product: Product }) {
             gap: '8px'
           }}
         >
-          <div style={{ color: '#111827' }}>
+          <div style={{ color: palette.pageText }}>
             <b>₹{product.price}</b>
-            <small style={{ color: '#6b7280' }}> / {product.unit}</small>
+            <small style={{ color: palette.mutedText }}> / {product.unit}</small>
             {product.oldPrice && (
-              <del style={{ color: '#9ca3af', marginLeft: '6px' }}>
+              <del style={{ color: palette.mutedText, marginLeft: '6px' }}>
                 ₹{product.oldPrice}
               </del>
             )}
@@ -218,8 +320,8 @@ function ProductCard({ product }: { product: Product }) {
             className="add-btn"
             style={{
               textDecoration: 'none',
-              backgroundColor: '#1b4332',
-              color: '#ffffff',
+              backgroundColor: palette.accentBg,
+              color: palette.accentText,
               borderRadius: '999px',
               padding: '6px 12px',
               fontSize: '12px',
@@ -237,6 +339,9 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export default function CollectionsPage() {
+  const isDark = useIsDarkTheme();
+  const palette = isDark ? darkPalette : lightPalette;
+
   const [category, setCategory] = useState('All');
   const [query] = useState('');
   const [sort, setSort] = useState('featured');
@@ -270,7 +375,14 @@ export default function CollectionsPage() {
     category === 'All' && sort === 'featured' && featuredProducts.length > 0;
 
   return (
-    <main style={{ backgroundColor: '#ffffff', color: '#111827', minHeight: '100vh' }}>
+    <main
+      style={{
+        backgroundColor: palette.pageBg,
+        color: palette.pageText,
+        minHeight: '100vh',
+        transition: 'background-color 0.2s ease, color 0.2s ease'
+      }}
+    >
       <Header />
       <section className="section-wrap collection-section">
         <div className="section-heading">
@@ -281,7 +393,7 @@ export default function CollectionsPage() {
             </span>
             <h2>Our <em>Collections</em></h2>
           </div>
-          <p className="collection-description">
+          <p className="collection-description" style={{ color: palette.mutedText }}>
             Organic Devbhoomi offers plants, fresh Himachali fruits, flowers, and quality seeds online. Shop nature-inspired products and get them delivered to your doorstep across Himachal Pradesh.
           </p>
         </div>
@@ -308,7 +420,7 @@ export default function CollectionsPage() {
               justifyContent: 'center',
               border: 'none',
               background: 'transparent',
-              color: '#111827',
+              color: palette.pageText,
               fontSize: 32,
               fontWeight: 700,
               lineHeight: 1,
@@ -327,10 +439,10 @@ export default function CollectionsPage() {
               padding: '0px 15px',
               width: '130px',
               height: '33px',
-              border: '1px solid #111827',
+              border: `1px solid ${palette.controlBorder}`,
               borderRadius: 4,
-              background: '#ffffff',
-              color: '#111827',
+              background: palette.controlBg,
+              color: palette.pageText,
               display: 'block',
               fontSize: 11
             }}
@@ -367,9 +479,11 @@ export default function CollectionsPage() {
                 style={{
                   flex: '0 0 auto',
                   whiteSpace: 'nowrap',
-                  backgroundColor: isActive ? '#1b4332' : '#ffffff',
-                  color: isActive ? '#ffffff' : '#111827',
-                  border: isActive ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
+                  backgroundColor: isActive ? palette.accentBg : palette.controlBg,
+                  color: isActive ? palette.accentText : palette.pageText,
+                  border: isActive
+                    ? `1.5px solid ${palette.accentBg}`
+                    : `1px solid ${palette.controlBorder}`,
                   borderRadius: '999px',
                   padding: '6px 14px',
                   cursor: 'pointer'
@@ -381,7 +495,7 @@ export default function CollectionsPage() {
           })}
         </div>
 
-        <p style={{ color: '#4b5563', fontSize: 11, marginBottom: 22 }}>
+        <p style={{ color: palette.mutedText, fontSize: 11, marginBottom: 22 }}>
           Showing {visibleProducts.length} products in &ldquo;{category}&rdquo;
         </p>
 
@@ -395,24 +509,28 @@ export default function CollectionsPage() {
                 marginBottom: 14
               }}
             >
-              <h3 style={{ margin: 0, fontSize: 18, color: '#111827' }}>
+              <h3 style={{ margin: 0, fontSize: 18, color: palette.pageText }}>
                 Featured Collection
               </h3>
-              <span style={{ color: '#4b5563', fontSize: 12 }}>
+              <span style={{ color: palette.mutedText, fontSize: 12 }}>
                 Handpicked highlights
               </span>
             </div>
 
             <div className="product-grid">
               {featuredProducts.map((product) => (
-                <ProductCard key={`featured-${product.id}`} product={product} />
+                <ProductCard
+                  key={`featured-${product.id}`}
+                  product={product}
+                  palette={palette}
+                />
               ))}
             </div>
 
             <hr
               style={{
                 border: 'none',
-                borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                borderTop: `1px solid ${palette.dividerColor}`,
                 marginTop: 32
               }}
             />
@@ -420,7 +538,7 @@ export default function CollectionsPage() {
         )}
 
         {showFeaturedSection && (
-          <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18, color: '#111827' }}>
+          <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18, color: palette.pageText }}>
             All Collections
           </h3>
         )}
@@ -428,16 +546,16 @@ export default function CollectionsPage() {
         {visibleProducts.length > 0 ? (
           <div className="product-grid">
             {visibleProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} palette={palette} />
             ))}
           </div>
         ) : (
           <div
             className="empty-state"
             style={{
-              backgroundColor: '#f9fafb',
-              color: '#374151',
-              border: '1px solid #e5e7eb',
+              backgroundColor: palette.emptyBg,
+              color: palette.pageText,
+              border: `1px solid ${palette.cardBorder}`,
               borderRadius: '12px'
             }}
           >
