@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 type HeaderProps = {
   cartCount?: number;
   onOpenCart?: () => void;
-  dark?: boolean;
-  onToggleDark?: () => void;
 };
 
 function BrandMark() {
@@ -45,12 +44,8 @@ const leafChoices = [
   { label: 'Journal', href: '/#journal' },
 ];
 
-export default function Header({
-  cartCount = 0,
-  onOpenCart,
-  dark = false,
-  onToggleDark,
-}: HeaderProps) {
+export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
+  const { dark, toggleDark } = useTheme();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -65,11 +60,11 @@ export default function Header({
     <header
       className="header"
       style={{
-        background: dark?'var(--bg)',
+        background: dark ? 'var(--bg)' : '#ffffff',
         backdropFilter: 'none',
         WebkitBackdropFilter: 'none',
         opacity: 1,
-        borderBottom: '1px solid #e5e9e4',
+        borderBottom: '1px solid var(--border)',
         position: 'sticky',
         top: 0,
         zIndex: 50,
@@ -249,7 +244,7 @@ export default function Header({
           type="button"
           className="icon-btn theme-btn"
           aria-label="Toggle theme"
-          onClick={() => onToggleDark?.()}
+          onClick={toggleDark}
         >
           {dark ? <Sun size={19} /> : <Moon size={19} />}
         </button>
