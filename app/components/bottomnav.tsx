@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { Sprout, Store, UserRound } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function BottomNav() {
+  const { dark } = useTheme();
+
   return (
-    <nav className="bottom-nav">
+    <nav className={dark ? 'bottom-nav dark' : 'bottom-nav'}>
       <Link href="/">
         <Sprout />
         <span>Home</span>
