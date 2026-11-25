@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import BottomNav from './components/bottomnav';
-import DevAiButton from './components/DevAi';
+import DevAiButton from './components/DevAiButton';
 import { ThemeProvider } from './context/ThemeContext';
 
 export const metadata: Metadata = {
