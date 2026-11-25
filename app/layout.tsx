@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import BottomNav from './components/bottomnav';
+import DevAiButton from './components/DevAi';
 import { ThemeProvider } from './context/ThemeContext';
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           {children}
+          <DevAiButton />
           <BottomNav />
         </ThemeProvider>
       </body>

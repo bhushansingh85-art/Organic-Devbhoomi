@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleGenAI } from "@google/genai";
 
-export default function DevAiButton() {
+export default function DevAi() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     { role: "model", text: "नमस्ते! मैं Dev AI हूँ। बताइए मैं आपकी क्या मदद कर सकता हूँ?" }
