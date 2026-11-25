@@ -1,7 +1,7 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import BottomNav from './components/bottomnav';
+import { ThemeProvider } from './context/ThemeContext';
 
 export const metadata: Metadata = {
   title: 'Organic Devbhoomi | From Nature to Your Home',
@@ -17,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
-        <BottomNav />
+        <ThemeProvider>
+          {children}
+          <BottomNav />
+        </ThemeProvider>
       </body>
     </html>
   );
