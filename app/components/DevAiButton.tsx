@@ -87,49 +87,82 @@ export default function DevAiButton() {
 
       {isOpen && (
         <div
-          className="devai-newpage-shell inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 flex flex-col overflow-hidden"
-          style={{ color: "#ffffff" }}
+          className="devai-newpage-shell sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 overflow-hidden"
+          style={{
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            color: "#ffffff",
+            backgroundColor: "#071911",
+          }}
         >
+          {/* Header */}
           <div
-            className="flex items-center justify-between px-5 py-4 border-b border-green-500/25"
-            style={{ background: "rgba(6, 78, 59, 0.55)" }}
+            className="px-5 py-4 border-b border-green-500/25"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              background: "#064e3b",
+              color: "#ffffff",
+              flexShrink: 0,
+            }}
           >
-            <div>
-              <div className="flex items-center gap-2">
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                 <h2
-                  className="font-semibold text-base tracking-wide"
-                  style={{ color: "#f0fdf4", margin: 0 }}
+                  style={{
+                    fontWeight: 700,
+                    fontSize: "16px",
+                    lineHeight: 1.25,
+                    color: "#ffffff",
+                    margin: 0,
+                  }}
                 >
                   DevAi Workspace
                 </h2>
                 <span
-                  className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full"
                   style={{
-                    background: "rgba(34, 197, 94, 0.2)",
-                    color: "#86efac",
-                    border: "1px solid rgba(74, 222, 128, 0.35)",
+                    fontSize: "10px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    padding: "2px 8px",
+                    borderRadius: "9999px",
+                    background: "rgba(34, 197, 94, 0.25)",
+                    color: "#bbf7d0",
+                    border: "1px solid rgba(74, 222, 128, 0.45)",
                   }}
                 >
                   Live
                 </span>
               </div>
               <p
-                className="text-xs mt-0.5"
-                style={{ color: "rgba(187, 247, 208, 0.8)", margin: "2px 0 0" }}
+                style={{
+                  fontSize: "12px",
+                  lineHeight: 1.35,
+                  color: "#dcfce7",
+                  margin: "4px 0 0",
+                }}
               >
                 Organic Devbhoomi • स्मार्ट असिस्टेंट
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
               <Link
                 href="/devai"
                 onClick={() => setIsOpen(false)}
-                className="text-[11px] px-2.5 py-1 rounded-full transition"
                 style={{
-                  background: "rgba(34, 197, 94, 0.18)",
-                  color: "#dcfce7",
-                  border: "1px solid rgba(74, 222, 128, 0.35)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  padding: "6px 12px",
+                  borderRadius: "9999px",
+                  background: "#15803d",
+                  color: "#ffffff",
+                  border: "1px solid #4ade80",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Full Page
@@ -138,11 +171,19 @@ export default function DevAiButton() {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close DevAi Interface"
-                className="h-9 w-9 rounded-full flex items-center justify-center text-sm transition"
                 style={{
-                  background: "rgba(255, 255, 255, 0.1)",
+                  height: "36px",
+                  width: "36px",
+                  borderRadius: "9999px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  background: "#14532d",
                   color: "#ffffff",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  border: "1px solid rgba(255, 255, 255, 0.25)",
+                  flexShrink: 0,
                 }}
               >
                 ✕
@@ -150,9 +191,16 @@ export default function DevAiButton() {
             </div>
           </div>
 
+          {/* Quick Prompts */}
           <div
-            className="px-4 py-2.5 border-b border-green-500/15 flex gap-2 overflow-x-auto"
-            style={{ background: "rgba(5, 46, 22, 0.45)" }}
+            className="px-4 py-2.5 border-b border-green-500/20"
+            style={{
+              display: "flex",
+              gap: "8px",
+              overflowX: "auto",
+              background: "#052e16",
+              flexShrink: 0,
+            }}
           >
             {QUICK_PROMPTS.map((item) => (
               <button
@@ -160,11 +208,16 @@ export default function DevAiButton() {
                 type="button"
                 onClick={() => sendMessage(item)}
                 disabled={isLoading}
-                className="shrink-0 text-xs px-3 py-1.5 rounded-full transition disabled:opacity-50"
                 style={{
-                  background: "rgba(6, 78, 59, 0.85)",
-                  color: "#dcfce7",
-                  border: "1px solid rgba(74, 222, 128, 0.35)",
+                  flexShrink: 0,
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  padding: "6px 12px",
+                  borderRadius: "9999px",
+                  background: "#065f46",
+                  color: "#f0fdf4",
+                  border: "1px solid rgba(74, 222, 128, 0.45)",
+                  opacity: isLoading ? 0.5 : 1,
                 }}
               >
                 {item}
@@ -172,26 +225,44 @@ export default function DevAiButton() {
             ))}
           </div>
 
+          {/* Chat Body */}
           <div
             ref={scrollRef}
-            className="flex-1 p-4 sm:p-5 overflow-y-auto text-sm space-y-3.5"
+            style={{
+              flex: 1,
+              padding: "16px",
+              overflowY: "auto",
+              fontSize: "14px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
           >
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className="px-4 py-3 rounded-2xl max-w-[85%] whitespace-pre-wrap leading-relaxed"
                 style={
                   msg.role === "user"
                     ? {
+                        padding: "12px 16px",
+                        borderRadius: "16px",
+                        maxWidth: "85%",
+                        whiteSpace: "pre-wrap",
+                        lineHeight: 1.55,
                         background: "linear-gradient(90deg, #16a34a, #059669)",
                         color: "#ffffff",
                         marginLeft: "auto",
                       }
                     : {
-                        background: "rgba(24, 24, 27, 0.92)",
+                        padding: "12px 16px",
+                        borderRadius: "16px",
+                        maxWidth: "85%",
+                        whiteSpace: "pre-wrap",
+                        lineHeight: 1.55,
+                        background: "#111814",
                         color: "#f0fdf4",
                         marginRight: "auto",
-                        border: "1px solid rgba(34, 197, 94, 0.25)",
+                        border: "1px solid rgba(74, 222, 128, 0.35)",
                       }
                 }
               >
@@ -200,12 +271,14 @@ export default function DevAiButton() {
             ))}
             {isLoading && (
               <div
-                className="px-4 py-3 rounded-2xl max-w-[85%]"
                 style={{
-                  background: "rgba(24, 24, 27, 0.85)",
+                  padding: "12px 16px",
+                  borderRadius: "16px",
+                  maxWidth: "85%",
+                  background: "#111814",
                   color: "#86efac",
                   marginRight: "auto",
-                  border: "1px solid rgba(34, 197, 94, 0.25)",
+                  border: "1px solid rgba(74, 222, 128, 0.35)",
                 }}
               >
                 सोच रहा है...
@@ -213,9 +286,16 @@ export default function DevAiButton() {
             )}
           </div>
 
+          {/* Input Bar */}
           <div
-            className="p-3.5 sm:p-4 border-t border-green-500/25 flex items-center gap-2.5"
-            style={{ background: "rgba(0, 0, 0, 0.65)" }}
+            className="p-3.5 sm:p-4 border-t border-green-500/25"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              background: "#050a08",
+              flexShrink: 0,
+            }}
           >
             <input
               type="text"
@@ -223,21 +303,32 @@ export default function DevAiButton() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="अपना सवाल यहाँ लिखें..."
-              className="flex-1 text-sm px-4 py-2.5 rounded-full focus:outline-none"
               style={{
+                flex: 1,
+                minWidth: 0,
+                fontSize: "14px",
+                padding: "10px 16px",
+                borderRadius: "9999px",
+                outline: "none",
                 background: "#18181b",
                 color: "#ffffff",
-                border: "1px solid rgba(74, 222, 128, 0.35)",
+                border: "1px solid rgba(74, 222, 128, 0.45)",
               }}
             />
             <button
               type="button"
               onClick={() => sendMessage()}
               disabled={isLoading}
-              className="px-5 py-2.5 rounded-full text-sm font-semibold transition disabled:opacity-50"
               style={{
+                padding: "10px 20px",
+                borderRadius: "9999px",
+                fontSize: "14px",
+                fontWeight: 700,
                 background: "linear-gradient(90deg, #22c55e, #10b981)",
                 color: "#09090b",
+                border: 0,
+                flexShrink: 0,
+                opacity: isLoading ? 0.5 : 1,
               }}
             >
               भेजें
