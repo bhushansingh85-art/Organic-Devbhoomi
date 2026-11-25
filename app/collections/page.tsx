@@ -99,6 +99,17 @@ const products: Product[] = [
 
 const categories = ['All', 'Plants', 'Fresh Fruits', 'Flowers & Seeds', 'More', 'Best Value'];
 
+function matchesCategoryFilter(product: Product, selectedCategory: string): boolean {
+  if (selectedCategory === 'All') return true;
+  if (selectedCategory === 'Best Value') {
+    return Boolean(product.oldPrice) || product.price <= 200;
+  }
+  if (selectedCategory === 'More') {
+    return !['Plants', 'Fresh Fruits', 'Flowers & Seeds'].includes(product.category);
+  }
+  return product.category === selectedCategory;
+}
+
 function ProductCard({ product }: { product: Product }) {
   return (
     <article
@@ -230,24 +241,20 @@ export default function CollectionsPage() {
   const [query] = useState('');
   const [sort, setSort] = useState('featured');
 
+  const normalizedQuery = query.trim().toLowerCase();
+
   const featuredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesFeatured = Boolean(product.featured || product.tag);
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(query.toLowerCase());
+      const matchesSearch = product.name.toLowerCase().includes(normalizedQuery);
       return matchesFeatured && matchesSearch;
     });
-  }, [query]);
+  }, [normalizedQuery]);
 
   const visibleProducts = useMemo(() => {
     const filtered = products.filter((product) => {
-      const matchesCategory =
-        category === 'All' || product.category === category;
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(query.toLowerCase());
-
+      const matchesCategory = matchesCategoryFilter(product, category);
+      const matchesSearch = product.name.toLowerCase().includes(normalizedQuery);
       return matchesCategory && matchesSearch;
     });
 
@@ -257,7 +264,7 @@ export default function CollectionsPage() {
     if (sort === 'rating') sorted.sort((a, b) => b.rating - a.rating);
 
     return sorted;
-  }, [category, query, sort]);
+  }, [category, normalizedQuery, sort]);
 
   const showFeaturedSection =
     category === 'All' && sort === 'featured' && featuredProducts.length > 0;
@@ -335,7 +342,6 @@ export default function CollectionsPage() {
           </select>
         </div>
 
-        {/* Single-line horizontally scrollable category bar */}
         <div
           role="tablist"
           aria-label="Product categories"
@@ -379,7 +385,6 @@ export default function CollectionsPage() {
           Showing {visibleProducts.length} products in &ldquo;{category}&rdquo;
         </p>
 
-        {/* Separate Featured Collection block */}
         {showFeaturedSection && (
           <div style={{ marginBottom: 36 }}>
             <div
@@ -414,7 +419,6 @@ export default function CollectionsPage() {
           </div>
         )}
 
-        {/* All / Filtered Collection grid */}
         {showFeaturedSection && (
           <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18, color: '#111827' }}>
             All Collections
