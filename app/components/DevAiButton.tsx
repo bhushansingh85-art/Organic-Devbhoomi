@@ -86,18 +86,37 @@ export default function DevAiButton() {
       </div>
 
       {isOpen && (
-        <div className="devai-newpage-shell inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 flex flex-col overflow-hidden text-white">
-          <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-green-950/90 via-emerald-950/80 to-zinc-950 border-b border-green-500/25">
+        <div
+          className="devai-newpage-shell inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 flex flex-col overflow-hidden"
+          style={{ color: "#ffffff" }}
+        >
+          <div
+            className="flex items-center justify-between px-5 py-4 border-b border-green-500/25"
+            style={{ background: "rgba(6, 78, 59, 0.55)" }}
+          >
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-semibold text-base text-green-50 tracking-wide">
+                <h2
+                  className="font-semibold text-base tracking-wide"
+                  style={{ color: "#f0fdf4", margin: 0 }}
+                >
                   DevAi Workspace
                 </h2>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-400/30">
+                <span
+                  className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full"
+                  style={{
+                    background: "rgba(34, 197, 94, 0.2)",
+                    color: "#86efac",
+                    border: "1px solid rgba(74, 222, 128, 0.35)",
+                  }}
+                >
                   Live
                 </span>
               </div>
-              <p className="text-xs text-green-300/75 mt-0.5">
+              <p
+                className="text-xs mt-0.5"
+                style={{ color: "rgba(187, 247, 208, 0.8)", margin: "2px 0 0" }}
+              >
                 Organic Devbhoomi • स्मार्ट असिस्टेंट
               </p>
             </div>
@@ -106,7 +125,12 @@ export default function DevAiButton() {
               <Link
                 href="/devai"
                 onClick={() => setIsOpen(false)}
-                className="text-[11px] px-2.5 py-1 rounded-full bg-green-500/15 hover:bg-green-500/25 text-green-200 border border-green-400/30 transition"
+                className="text-[11px] px-2.5 py-1 rounded-full transition"
+                style={{
+                  background: "rgba(34, 197, 94, 0.18)",
+                  color: "#dcfce7",
+                  border: "1px solid rgba(74, 222, 128, 0.35)",
+                }}
               >
                 Full Page
               </Link>
@@ -114,21 +138,34 @@ export default function DevAiButton() {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close DevAi Interface"
-                className="h-9 w-9 rounded-full bg-white/5 hover:bg-green-500/20 border border-white/10 hover:border-green-400/40 text-green-100 hover:text-white flex items-center justify-center text-sm transition cursor-pointer"
+                className="h-9 w-9 rounded-full flex items-center justify-center text-sm transition"
+                style={{
+                  background: "rgba(255, 255, 255, 0.1)",
+                  color: "#ffffff",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                }}
               >
                 ✕
               </button>
             </div>
           </div>
 
-          <div className="px-4 py-2.5 bg-green-950/35 border-b border-green-500/15 flex gap-2 overflow-x-auto no-scrollbar">
+          <div
+            className="px-4 py-2.5 border-b border-green-500/15 flex gap-2 overflow-x-auto"
+            style={{ background: "rgba(5, 46, 22, 0.45)" }}
+          >
             {QUICK_PROMPTS.map((item) => (
               <button
                 key={item}
                 type="button"
                 onClick={() => sendMessage(item)}
                 disabled={isLoading}
-                className="shrink-0 text-xs px-3 py-1.5 rounded-full bg-green-950/80 hover:bg-green-900/80 text-green-200 border border-green-500/30 transition cursor-pointer disabled:opacity-50"
+                className="shrink-0 text-xs px-3 py-1.5 rounded-full transition disabled:opacity-50"
+                style={{
+                  background: "rgba(6, 78, 59, 0.85)",
+                  color: "#dcfce7",
+                  border: "1px solid rgba(74, 222, 128, 0.35)",
+                }}
               >
                 {item}
               </button>
@@ -142,36 +179,66 @@ export default function DevAiButton() {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`px-4 py-3 rounded-2xl max-w-[85%] whitespace-pre-wrap leading-relaxed ${
+                className="px-4 py-3 rounded-2xl max-w-[85%] whitespace-pre-wrap leading-relaxed"
+                style={
                   msg.role === "user"
-                    ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-br-xs ml-auto shadow-[0_6px_20px_rgba(22,163,74,0.35)]"
-                    : "bg-zinc-900/90 text-green-50/95 rounded-bl-xs mr-auto border border-green-500/20"
-                }`}
+                    ? {
+                        background: "linear-gradient(90deg, #16a34a, #059669)",
+                        color: "#ffffff",
+                        marginLeft: "auto",
+                      }
+                    : {
+                        background: "rgba(24, 24, 27, 0.92)",
+                        color: "#f0fdf4",
+                        marginRight: "auto",
+                        border: "1px solid rgba(34, 197, 94, 0.25)",
+                      }
+                }
               >
                 {msg.text}
               </div>
             ))}
             {isLoading && (
-              <div className="bg-zinc-900/80 text-green-300/85 px-4 py-3 rounded-2xl rounded-bl-xs mr-auto max-w-[85%] border border-green-500/20 animate-pulse">
+              <div
+                className="px-4 py-3 rounded-2xl max-w-[85%]"
+                style={{
+                  background: "rgba(24, 24, 27, 0.85)",
+                  color: "#86efac",
+                  marginRight: "auto",
+                  border: "1px solid rgba(34, 197, 94, 0.25)",
+                }}
+              >
                 सोच रहा है...
               </div>
             )}
           </div>
 
-          <div className="p-3.5 sm:p-4 border-t border-green-500/25 bg-black/50 flex items-center gap-2.5">
+          <div
+            className="p-3.5 sm:p-4 border-t border-green-500/25 flex items-center gap-2.5"
+            style={{ background: "rgba(0, 0, 0, 0.65)" }}
+          >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="अपना सवाल यहाँ लिखें..."
-              className="flex-1 bg-zinc-900/90 border border-green-500/30 text-sm text-green-50 placeholder:text-green-200/40 px-4 py-2.5 rounded-full focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400/50"
+              className="flex-1 text-sm px-4 py-2.5 rounded-full focus:outline-none"
+              style={{
+                background: "#18181b",
+                color: "#ffffff",
+                border: "1px solid rgba(74, 222, 128, 0.35)",
+              }}
             />
             <button
               type="button"
               onClick={() => sendMessage()}
               disabled={isLoading}
-              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-zinc-950 px-5 py-2.5 rounded-full text-sm font-semibold shadow-[0_0_18px_rgba(34,197,94,0.45)] transition cursor-pointer disabled:opacity-50"
+              className="px-5 py-2.5 rounded-full text-sm font-semibold transition disabled:opacity-50"
+              style={{
+                background: "linear-gradient(90deg, #22c55e, #10b981)",
+                color: "#09090b",
+              }}
             >
               भेजें
             </button>
