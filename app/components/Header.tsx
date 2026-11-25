@@ -65,7 +65,7 @@ export default function Header({
     <header
       className="header"
       style={{
-        background: '#ffffff',
+        background: dark?'var(--bg)',
         backdropFilter: 'none',
         WebkitBackdropFilter: 'none',
         opacity: 1,
