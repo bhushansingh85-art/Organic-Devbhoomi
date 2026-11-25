@@ -101,43 +101,121 @@ const categories = ['All', 'Plants', 'Fresh Fruits', 'Flowers & Seeds', 'More', 
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="product-card">
+    <article
+      className="product-card"
+      style={{
+        backgroundColor: '#ffffff',
+        color: '#111827',
+        border: '1px solid #e5e7eb',
+        borderRadius: '14px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)'
+      }}
+    >
       <Link
         href={`/products/${product.id}`}
         className="product-image-wrap"
-        style={{ display: 'block' }}
+        style={{
+          display: 'block',
+          position: 'relative',
+          backgroundColor: '#f3f4f6'
+        }}
       >
-        <img src={product.image} alt={product.name} />
+        <img
+          src={product.image}
+          alt={product.name}
+          style={{
+            width: '100%',
+            height: '220px',
+            objectFit: 'cover',
+            display: 'block'
+          }}
+        />
         {product.tag && (
-          <span className="product-tag">{product.tag}</span>
+          <span
+            className="product-tag"
+            style={{
+              backgroundColor: '#ecfdf5',
+              color: '#1b4332',
+              border: '1px solid #a7f3d0'
+            }}
+          >
+            {product.tag}
+          </span>
         )}
       </Link>
 
-      <div className="product-info">
-        <div className="product-meta">
+      <div
+        className="product-info"
+        style={{
+          backgroundColor: '#ffffff',
+          color: '#111827',
+          padding: '14px'
+        }}
+      >
+        <div
+          className="product-meta"
+          style={{
+            color: '#4b5563',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
           <span>{product.category}</span>
-          <span className="rating">
+          <span
+            className="rating"
+            style={{
+              color: '#b45309',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
             <Star size={11} fill="currentColor" />
             {product.rating}
-            <small>({product.reviews})</small>
+            <small style={{ color: '#6b7280' }}>({product.reviews})</small>
           </span>
         </div>
 
-        <h3>{product.name}</h3>
+        <h3 style={{ color: '#111827', margin: '6px 0 10px' }}>
+          {product.name}
+        </h3>
 
-        <div className="product-bottom">
-          <div>
+        <div
+          className="product-bottom"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <div style={{ color: '#111827' }}>
             <b>₹{product.price}</b>
-            <small> / {product.unit}</small>
+            <small style={{ color: '#6b7280' }}> / {product.unit}</small>
             {product.oldPrice && (
-              <del>₹{product.oldPrice}</del>
+              <del style={{ color: '#9ca3af', marginLeft: '6px' }}>
+                ₹{product.oldPrice}
+              </del>
             )}
           </div>
 
           <Link
             href={`/products/${product.id}`}
             className="add-btn"
-            style={{ textDecoration: 'none' }}
+            style={{
+              textDecoration: 'none',
+              backgroundColor: '#1b4332',
+              color: '#ffffff',
+              borderRadius: '999px',
+              padding: '6px 12px',
+              fontSize: '12px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
           >
             View Details <ArrowRight size={13} />
           </Link>
@@ -149,7 +227,7 @@ function ProductCard({ product }: { product: Product }) {
 
 export default function CollectionsPage() {
   const [category, setCategory] = useState('All');
-  const [query, setQuery] = useState('');
+  const [query] = useState('');
   const [sort, setSort] = useState('featured');
 
   const featuredProducts = useMemo(() => {
@@ -163,7 +241,7 @@ export default function CollectionsPage() {
   }, [query]);
 
   const visibleProducts = useMemo(() => {
-    const result = products.filter((product) => {
+    const filtered = products.filter((product) => {
       const matchesCategory =
         category === 'All' || product.category === category;
       const matchesSearch = product.name
@@ -173,18 +251,19 @@ export default function CollectionsPage() {
       return matchesCategory && matchesSearch;
     });
 
-    if (sort === 'price-low') result.sort((a, b) => a.price - b.price);
-    if (sort === 'price-high') result.sort((a, b) => b.price - a.price);
-    if (sort === 'rating') result.sort((a, b) => b.rating - a.rating);
+    const sorted = [...filtered];
+    if (sort === 'price-low') sorted.sort((a, b) => a.price - b.price);
+    if (sort === 'price-high') sorted.sort((a, b) => b.price - a.price);
+    if (sort === 'rating') sorted.sort((a, b) => b.rating - a.rating);
 
-    return result;
+    return sorted;
   }, [category, query, sort]);
 
   const showFeaturedSection =
     category === 'All' && sort === 'featured' && featuredProducts.length > 0;
 
   return (
-    <main>
+    <main style={{ backgroundColor: '#ffffff', color: '#111827', minHeight: '100vh' }}>
       <Header />
       <section className="section-wrap collection-section">
         <div className="section-heading">
@@ -222,7 +301,7 @@ export default function CollectionsPage() {
               justifyContent: 'center',
               border: 'none',
               background: 'transparent',
-              color: 'var(--text)',
+              color: '#111827',
               fontSize: 32,
               fontWeight: 700,
               lineHeight: 1,
@@ -241,10 +320,10 @@ export default function CollectionsPage() {
               padding: '0px 15px',
               width: '130px',
               height: '33px',
-              border: '1px solid #000000',
+              border: '1px solid #111827',
               borderRadius: 4,
-              background: 'var(--bg)',
-              color: 'var(--text)',
+              background: '#ffffff',
+              color: '#111827',
               display: 'block',
               fontSize: 11
             }}
@@ -271,27 +350,33 @@ export default function CollectionsPage() {
             scrollbarWidth: 'thin'
           }}
         >
-          {categories.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={`category-pill ${category === item ? 'active' : ''}`}
-              onClick={() => setCategory(item)}
-              style={{
-                flex: '0 0 auto',
-                whiteSpace: 'nowrap',
-                border: category === item ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
-                borderRadius: '999px',
-                padding: '6px 14px'
-              }}
-            >
-              {item}
-            </button>
-          ))}
+          {categories.map((item) => {
+            const isActive = category === item;
+            return (
+              <button
+                key={item}
+                type="button"
+                className={`category-pill ${isActive ? 'active' : ''}`}
+                onClick={() => setCategory(item)}
+                style={{
+                  flex: '0 0 auto',
+                  whiteSpace: 'nowrap',
+                  backgroundColor: isActive ? '#1b4332' : '#ffffff',
+                  color: isActive ? '#ffffff' : '#111827',
+                  border: isActive ? '1.5px solid #1b4332' : '1px solid #cbd5e1',
+                  borderRadius: '999px',
+                  padding: '6px 14px',
+                  cursor: 'pointer'
+                }}
+              >
+                {item}
+              </button>
+            );
+          })}
         </div>
 
-        <p style={{ color: 'var(--sub)', fontSize: 11, marginBottom: 22 }}>
-          Showing {visibleProducts.length} products
+        <p style={{ color: '#4b5563', fontSize: 11, marginBottom: 22 }}>
+          Showing {visibleProducts.length} products in &ldquo;{category}&rdquo;
         </p>
 
         {/* Separate Featured Collection block */}
@@ -305,8 +390,10 @@ export default function CollectionsPage() {
                 marginBottom: 14
               }}
             >
-              <h3 style={{ margin: 0, fontSize: 18 }}>Featured Collection</h3>
-              <span style={{ color: 'var(--sub)', fontSize: 12 }}>
+              <h3 style={{ margin: 0, fontSize: 18, color: '#111827' }}>
+                Featured Collection
+              </h3>
+              <span style={{ color: '#4b5563', fontSize: 12 }}>
                 Handpicked highlights
               </span>
             </div>
@@ -329,7 +416,7 @@ export default function CollectionsPage() {
 
         {/* All / Filtered Collection grid */}
         {showFeaturedSection && (
-          <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18 }}>
+          <h3 style={{ marginTop: 0, marginBottom: 14, fontSize: 18, color: '#111827' }}>
             All Collections
           </h3>
         )}
@@ -341,8 +428,16 @@ export default function CollectionsPage() {
             ))}
           </div>
         ) : (
-          <div className="empty-state">
-            No products found. Try another search.
+          <div
+            className="empty-state"
+            style={{
+              backgroundColor: '#f9fafb',
+              color: '#374151',
+              border: '1px solid #e5e7eb',
+              borderRadius: '12px'
+            }}
+          >
+            No products found in &ldquo;{category}&rdquo;. Try another category.
           </div>
         )}
       </section>
