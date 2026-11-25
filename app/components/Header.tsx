@@ -52,7 +52,8 @@ export default function Header() {
         WebkitBackdropFilter: 'none',
         opacity: 1,
         borderBottom: '1px solid #e5e9e4',
-        position: 'relative',
+        position: 'sticky',
+        top: 0,
         zIndex: 50,
       }}
     >
@@ -98,19 +99,19 @@ export default function Header() {
           text-decoration: none;
           font-size: 20px;
           font-weight: 700;
-          color: #0b2419;
-          background: linear-gradient(125deg, #d8f3dc 0%, #74c69d 52%, #2d6a4f 100%);
-          border: 2px solid #95d5b2;
+          color: #ffffff;
+          background-color: #40916c;
+          border: 2px solid #74c69d;
           border-radius: 8px 56px 10px 56px;
           box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
           cursor: pointer;
           animation: bigLeafEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-          transition: transform 0.22s ease, filter 0.22s ease;
+          transition: transform 0.22s ease, background-color 0.22s ease;
         }
 
         .big-leaf-btn:hover {
           transform: translateX(8px) scale(1.01);
-          filter: brightness(1.05);
+          background-color: #2d6a4f;
         }
       `}</style>
 
@@ -128,7 +129,7 @@ export default function Header() {
           alignItems: 'center',
           justifyContent: 'center',
           gap: 4.5,
-          background: mobileMenu ? '#f4f6f4',
+          background: mobileMenu ? '#1b4332' : '#f4f6f4',
           color: mobileMenu ? '#ffffff' : '#1b4332',
           border: '1px solid rgba(27, 67, 50, 0.22)',
           borderRadius: '999px',
