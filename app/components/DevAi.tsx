@@ -55,24 +55,24 @@ export default function DevAiButton() {
 
   return (
     <>
-      {/* तैरता हुआ और चमकता हुआ Dev AI बटन */}
+      {/* स्क्रीन पर तैरता हुआ Dev AI बटन */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
           borderRadius: "25px",
           boxShadow: "0 0 18px rgba(59, 130, 246, 0.8), 0 0 35px rgba(147, 51, 234, 0.6)",
         }}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-3.5 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 animate-pulse hover:animate-none cursor-pointer border border-white/20"
+        className="fixed top-1/2 -translate-y-1/2 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-3.5 text-white font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 animate-pulse hover:animate-none cursor-pointer border border-white/20"
       >
         <span className="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#67e8f9]" />
         <span>Dev AI</span>
       </button>
 
-      {/* चैट बॉक्स (बटन पर क्लिक करने पर खुलेगा) */}
+      {/* चैट बॉक्स */}
       {isOpen && (
         <div
           style={{ borderRadius: "20px" }}
-          className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 shadow-2xl overflow-hidden text-white"
+          className="fixed top-1/2 -translate-y-1/2 right-28 z-50 w-80 sm:w-96 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 shadow-2xl overflow-hidden text-white"
         >
           {/* हेडर */}
           <div className="flex items-center justify-between bg-gradient-to-r from-blue-600/20 to-purple-600/20 px-4 py-3 border-b border-zinc-800">
