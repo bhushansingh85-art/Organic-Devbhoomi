@@ -77,7 +77,10 @@ export default function DevAiButton() {
       <div className="devai-round-orb">
         <button
           type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={() => {
+            console.log("DevAi button clicked");
+            setIsOpen((prev) => !prev);
+          }}
           aria-label={isOpen ? "Close DevAi" : "Open DevAi"}
           className="devai-round-btn"
         >
