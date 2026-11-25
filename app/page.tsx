@@ -25,6 +25,7 @@ import {
   Apple,
 } from 'lucide-react';
 import Header from './components/Header';
+import { useTheme } from './context/ThemeContext';
 
 type Product = {
   id: number;
@@ -74,7 +75,7 @@ const products: Product[] = [
     unit: '1 packet',
     rating: 4.7,
     reviews: 54,
-    image: 'https://images.unsplash.com/photo-1597848212624-E6CF1A2F8C2A?w=900&q=85',
+    image: 'https://images.unsplash.com/photo-1597848212624-e6cf1a2f8c2a?w=900&q=85',
     description: 'Easy-to-grow sunflower seeds for a bright, pollinator-friendly garden.',
   },
   {
@@ -149,11 +150,11 @@ function BrandMark() {
 }
 
 export default function Home() {
+  const { dark } = useTheme();
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<Record<number, number>>({});
-  const [dark, setDark] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatText, setChatText] = useState('');
@@ -203,10 +204,7 @@ export default function Home() {
         <span className="announce-right">Thoughtfully grown. Naturally yours.</span>
       </div>
 
-      <Header
-        cartCount={count}
-        onOpenCart={() => setCartOpen(true)}       
-      />
+      <Header cartCount={count} onOpenCart={() => setCartOpen(true)} />
 
       <AnimatePresence>
         {mobileMenu && (
