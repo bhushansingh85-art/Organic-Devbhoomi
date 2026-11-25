@@ -204,7 +204,10 @@ export default function Home() {
         <span className="announce-right">Thoughtfully grown. Naturally yours.</span>
       </div>
 
-      <Header cartCount={count} onOpenCart={() => setCartOpen(true)} />
+     <Header
+  cartCount={count}
+  onOpenCart={() => setCartOpen(true)}
+/>
 
       <AnimatePresence>
         {mobileMenu && (
