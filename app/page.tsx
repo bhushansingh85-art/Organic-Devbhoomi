@@ -390,7 +390,11 @@ export default function Home() {
             <div>
               <b>Stay connected</b>
               <p className="footer-small">Have a question? Our team would love to help.</p>
-              <button className="whatsapp-link" onClick={() => setChatOpen(true)}>
+              <button
+                type="button"
+                className="whatsapp-link"
+                onClick={() => setChatOpen(true)}
+              >
                 <MessageCircle size={16} /> Chat with Dev AI
               </button>
             </div>
@@ -440,7 +444,11 @@ export default function Home() {
                       Your basket <span>({count})</span>
                     </h2>
                   </div>
-                  <button className="icon-btn" onClick={() => setCartOpen(false)}>
+                  <button
+                    type="button"
+                    className="icon-btn"
+                    onClick={() => setCartOpen(false)}
+                  >
                     <X />
                   </button>
                 </div>
@@ -481,7 +489,11 @@ export default function Home() {
                     <span /> Here to help you grow
                   </small>
                 </div>
-                <button className="icon-btn" onClick={() => setChatOpen(false)}>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setChatOpen(false)}
+                >
                   <X />
                 </button>
               </div>
