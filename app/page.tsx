@@ -22,7 +22,7 @@ import Header from './components/Header';
 import { useTheme } from './context/ThemeContext';
 
 const SPLASH_EMBED_URL =
-  'https://lottie.host/embed/baa501f1-6c9f-4730-a560-d54376702003/BrrHyxjEvY.lottie';
+  'https://lottie.host/embed/9c113b04-d4aa-42bd-947c-77154f51b6cf/2SV0O31VCy.lottie';
 
 function BrandMark() {
   return (
@@ -66,7 +66,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2200);
+    },7000);
 
     return () => clearTimeout(timer);
   }, []);
