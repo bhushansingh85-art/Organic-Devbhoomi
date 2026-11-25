@@ -36,7 +36,6 @@ const leafChoices = [
   { label: 'Shop', href: '/collections' },
   { label: 'Our Story', href: '/#story' },
   { label: 'Journal', href: '/#journal' },
-  { label: 'Close', href: null },
 ];
 
 export default function Header() {
@@ -88,11 +87,36 @@ export default function Header() {
           overflow-y: auto;
         }
 
+        .leaf-close-top-btn {
+          position: fixed;
+          top: 18px;
+          right: 18px;
+          width: 44px;
+          height: 44px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          background: rgba(16, 42, 30, 0.9);
+          color: #ffffff;
+          font-size: 24px;
+          line-height: 1;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          z-index: 10001;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+          transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .leaf-close-top-btn:hover {
+          transform: scale(1.06);
+          background: #1b4332;
+        }
+
         .big-leaf-btn {
           position: relative;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: flex-start;
           width: 100%;
           min-height: 68px;
           padding: 16px 24px;
@@ -112,15 +136,6 @@ export default function Header() {
         .big-leaf-btn:hover {
           transform: translateX(8px) scale(1.01);
           filter: brightness(1.05);
-        }
-
-        .big-leaf-num {
-          font-size: 13px;
-          font-weight: 800;
-          padding: 4px 10px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.78);
-          color: #1b4332;
         }
       `}</style>
 
@@ -200,34 +215,26 @@ export default function Header() {
           aria-modal="true"
           aria-label="Leaf navigation options"
         >
-          {leafChoices.map((item, idx) =>
-            item.href ? (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="big-leaf-btn"
-                style={{ animationDelay: `${idx * 90}ms` }}
-                onClick={() => setMobileMenu(false)}
-              >
-                <span>🍃 {item.label}</span>
-                <span className="big-leaf-num">{idx + 1}</span>
-              </Link>
-            ) : (
-              <button
-                key={item.label}
-                type="button"
-                className="big-leaf-btn"
-                style={{
-                  animationDelay: `${idx * 90}ms`,
-                  background: 'linear-gradient(125deg, #e9f5db 0%, #b7e4c7 55%, #52b788 100%)',
-                }}
-                onClick={() => setMobileMenu(false)}
-              >
-                <span>🌿 {item.label}</span>
-                <span className="big-leaf-num">{idx + 1}</span>
-              </button>
-            )
-          )}
+          <button
+            type="button"
+            className="leaf-close-top-btn"
+            aria-label="Close menu"
+            onClick={() => setMobileMenu(false)}
+          >
+            ×
+          </button>
+
+          {leafChoices.map((item, idx) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="big-leaf-btn"
+              style={{ animationDelay: `${idx * 90}ms` }}
+              onClick={() => setMobileMenu(false)}
+            >
+              <span>{item.label}</span>
+            </Link>
+          ))}
         </div>
       )}
 
