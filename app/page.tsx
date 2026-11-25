@@ -205,9 +205,7 @@ export default function Home() {
 
       <Header
         cartCount={count}
-        onOpenCart={() => setCartOpen(true)}
-        dark={dark}
-        onToggleDark={() => setDark((prev) => !prev)}
+        onOpenCart={() => setCartOpen(true)}       
       />
 
       <AnimatePresence>
