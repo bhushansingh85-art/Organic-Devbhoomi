@@ -32,11 +32,11 @@ function BrandMark() {
 }
 
 const leafChoices = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/collections' },
-  { label: 'Our Story', href: '/#story' },
-  { label: 'Journal', href: '/#journal' },
-  { label: 'Close', href: null },
+  { label: 'Home', href: '/', gradStart: '#95d5b2', gradEnd: '#2d6a4f' },
+  { label: 'Shop', href: '/collections', gradStart: '#74c69d', gradEnd: '#1b4332' },
+  { label: 'Our Story', href: '/#story', gradStart: '#b7e4c7', gradEnd: '#40916c' },
+  { label: 'Journal', href: '/#journal', gradStart: '#80ed99', gradEnd: '#2b9348' },
+  { label: 'Close', href: null, gradStart: '#d8f3dc', gradEnd: '#52b788' },
 ];
 
 export default function Header() {
@@ -58,14 +58,14 @@ export default function Header() {
       }}
     >
       <style>{`
-        @keyframes bigLeafEnter {
+        @keyframes realLeafDrop {
           0% {
             opacity: 0;
-            transform: translateX(-80px) translateY(28px) rotate(-18deg) scale(0.78);
+            transform: translateX(-115px) translateY(34px) rotate(-28deg) scale(0.7);
           }
-          68% {
+          72% {
             opacity: 1;
-            transform: translateX(8px) translateY(-2px) rotate(2deg) scale(1.03);
+            transform: translateX(8px) translateY(-3px) rotate(3deg) scale(1.03);
           }
           100% {
             opacity: 1;
@@ -73,54 +73,78 @@ export default function Header() {
           }
         }
 
-        .leaf-screen-overlay {
+        .real-leaf-screen {
           position: fixed;
           inset: 0;
-          padding: 84px 20px 28px;
-          background: rgba(12, 34, 24, 0.72);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
+          padding: 78px 18px 24px;
+          background: rgba(9, 28, 19, 0.72);
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
           z-index: 9999;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          gap: 14px;
+          align-items: center;
+          gap: 10px;
           overflow-y: auto;
         }
 
-        .big-leaf-btn {
+        .real-leaf-slot {
           position: relative;
+          width: min(390px, 100%);
+          height: 88px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: realLeafDrop 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+          transition: transform 0.22s ease;
+        }
+
+        .real-leaf-slot:hover {
+          transform: translateX(8px) scale(1.03);
+        }
+
+        .real-leaf-svg {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.32));
+          pointer-events: none;
+        }
+
+        .real-leaf-link,
+        .real-leaf-btn {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          width: 100%;
-          min-height: 68px;
-          padding: 16px 24px;
+          padding: 0 38px 0 34px;
           text-decoration: none;
-          font-size: 20px;
+          border: none;
+          background: transparent;
+          color: #ffffff;
+          font-size: 19px;
           font-weight: 700;
-          color: #0b2419;
-          background: linear-gradient(125deg, #d8f3dc 0%, #74c69d 52%, #2d6a4f 100%);
-          border: 2px solid #95d5b2;
-          border-radius: 8px 56px 10px 56px;
-          box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+          letter-spacing: 0.2px;
           cursor: pointer;
-          animation: bigLeafEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-          transition: transform 0.22s ease, filter 0.22s ease;
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
         }
 
-        .big-leaf-btn:hover {
-          transform: translateX(8px) scale(1.01);
-          filter: brightness(1.05);
-        }
-
-        .big-leaf-num {
+        .real-leaf-badge {
+          width: 28px;
+          height: 28px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
           font-size: 13px;
           font-weight: 800;
-          padding: 4px 10px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.78);
-          color: #1b4332;
+          background: rgba(255, 255, 255, 0.24);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.45);
         }
       `}</style>
 
@@ -195,39 +219,70 @@ export default function Header() {
 
       {mobileMenu && (
         <div
-          className="leaf-screen-overlay"
+          className="real-leaf-screen"
           role="dialog"
           aria-modal="true"
-          aria-label="Leaf navigation options"
+          aria-label="Leaf navigation menu"
         >
-          {leafChoices.map((item, idx) =>
-            item.href ? (
-              <Link
+          {leafChoices.map((item, idx) => {
+            const gradId = `leaf-grad-${idx}`;
+            return (
+              <div
                 key={item.label}
-                href={item.href}
-                className="big-leaf-btn"
-                style={{ animationDelay: `${idx * 90}ms` }}
-                onClick={() => setMobileMenu(false)}
+                className="real-leaf-slot"
+                style={{ animationDelay: `${idx * 95}ms` }}
               >
-                <span>🍃 {item.label}</span>
-                <span className="big-leaf-num">{idx + 1}</span>
-              </Link>
-            ) : (
-              <button
-                key={item.label}
-                type="button"
-                className="big-leaf-btn"
-                style={{
-                  animationDelay: `${idx * 90}ms`,
-                  background: 'linear-gradient(125deg, #e9f5db 0%, #b7e4c7 55%, #52b788 100%)',
-                }}
-                onClick={() => setMobileMenu(false)}
-              >
-                <span>🌿 {item.label}</span>
-                <span className="big-leaf-num">{idx + 1}</span>
-              </button>
-            )
-          )}
+                <svg
+                  className="real-leaf-svg"
+                  viewBox="0 0 390 88"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor={item.gradStart} />
+                      <stop offset="100%" stopColor={item.gradEnd} />
+                    </linearGradient>
+                  </defs>
+                  {/* नुकीली नोक और घुमावदार किनारों वाली पत्ती */}
+                  <path
+                    d="M 14 45 C 52 10, 178 4, 292 24 C 334 31, 362 39, 376 45 C 362 51, 334 59, 292 66 C 178 86, 52 80, 14 45 Z"
+                    fill={`url(#${gradId})`}
+                    stroke="rgba(216, 243, 220, 0.72)"
+                    strokeWidth="1.6"
+                  />
+                  {/* पत्ती की बीच वाली नस */}
+                  <path
+                    d="M 22 45 Q 195 43 362 45"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.38)"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                </svg>
+
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="real-leaf-link"
+                    onClick={() => setMobileMenu(false)}
+                  >
+                    <span>{item.label}</span>
+                    <span className="real-leaf-badge">{idx + 1}</span>
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className="real-leaf-btn"
+                    onClick={() => setMobileMenu(false)}
+                  >
+                    <span>{item.label}</span>
+                    <span className="real-leaf-badge">{idx + 1}</span>
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
