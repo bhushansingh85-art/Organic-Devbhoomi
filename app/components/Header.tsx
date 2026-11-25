@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -48,6 +48,12 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
   const { dark, toggleDark } = useTheme();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    root.classList.toggle('dark', Boolean(dark));
+  }, [dark]);
 
   const handleBasketClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onOpenCart) {
