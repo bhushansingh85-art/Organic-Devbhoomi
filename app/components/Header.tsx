@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -45,6 +46,7 @@ const leafChoices = [
 ];
 
 export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
+  const router = useRouter();
   const { dark, toggleDark } = useTheme();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [query, setQuery] = useState('');
@@ -60,6 +62,10 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
       e.preventDefault();
       onOpenCart();
     }
+  };
+
+  const handleAccountClick = () => {
+    router.push('/profile');
   };
 
   return (
@@ -254,7 +260,12 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
         >
           {dark ? <Sun size={19} /> : <Moon size={19} />}
         </button>
-        <button type="button" className="icon-btn account-btn" aria-label="Account">
+        <button
+          type="button"
+          className="icon-btn account-btn"
+          aria-label="Account"
+          onClick={handleAccountClick}
+        >
           <UserRound size={19} />
         </button>
         <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
