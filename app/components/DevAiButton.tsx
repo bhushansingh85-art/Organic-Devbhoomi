@@ -20,8 +20,11 @@ Rules:
 4. Keep responses helpful, clear, and concise.
 `.trim();
 
+type ViewMode = "full" | "half";
+
 export default function DevAiButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("full");
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     {
       role: "model",
@@ -32,6 +35,15 @@ export default function DevAiButton() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const openFullPageView = () => {
+    setViewMode("full");
+    setIsOpen(true);
+  };
+
+  const toggleViewMode = () => {
+    setViewMode((prev) => (prev === "full" ? "half" : "full"));
+  };
 
   const cancelResponse = () => {
     if (abortControllerRef.current) {
@@ -103,15 +115,49 @@ export default function DevAiButton() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading, isOpen]);
+  }, [messages, isLoading, isOpen, viewMode]);
+
+  const shellStyle: React.CSSProperties =
+    viewMode === "full"
+      ? {
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 9999,
+          borderRadius: 0,
+          display: "flex",
+          flexDirection: "column",
+          color: "#ffffff",
+          backgroundColor: "#071911",
+        }
+      : {
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: "auto",
+          width: "min(50vw, 720px)",
+          height: "100vh",
+          zIndex: 9999,
+          borderRadius: 0,
+          display: "flex",
+          flexDirection: "column",
+          color: "#ffffff",
+          backgroundColor: "#071911",
+          boxShadow: "-8px 0 28px rgba(0, 0, 0, 0.45)",
+        };
 
   return (
     <>
       <div className="devai-round-orb">
         <button
           type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label={isOpen ? "Close DevAi" : "Open DevAi"}
+          onClick={openFullPageView}
+          aria-label="Open DevAi Full Page"
           className="devai-round-btn"
         >
           DevAi
@@ -120,14 +166,8 @@ export default function DevAiButton() {
 
       {isOpen && (
         <div
-          className="devai-newpage-shell sm:bottom-24 sm:right-6 sm:w-[430px] sm:h-[600px] sm:rounded-3xl border border-green-500/35 overflow-hidden"
-          style={{
-            inset: 0,
-            display: "flex",
-            flexDirection: "column",
-            color: "#ffffff",
-            backgroundColor: "#071911",
-          }}
+          className="devai-newpage-shell border border-green-500/35 overflow-hidden"
+          style={shellStyle}
         >
           {/* Header */}
           <div
@@ -167,7 +207,7 @@ export default function DevAiButton() {
                     border: "1px solid rgba(74, 222, 128, 0.45)",
                   }}
                 >
-                  Live
+                  {viewMode === "full" ? "Full Page" : "Half Page"}
                 </span>
               </div>
               <p
@@ -183,6 +223,24 @@ export default function DevAiButton() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+              <button
+                type="button"
+                onClick={toggleViewMode}
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  padding: "6px 12px",
+                  borderRadius: "9999px",
+                  background: "#065f46",
+                  color: "#ffffff",
+                  border: "1px solid #4ade80",
+                  whiteSpace: "nowrap",
+                  cursor: "pointer",
+                }}
+              >
+                {viewMode === "full" ? "Half Page" : "Full Page"}
+              </button>
+
               <Link
                 href="/devai"
                 onClick={() => setIsOpen(false)}
@@ -198,8 +256,9 @@ export default function DevAiButton() {
                   whiteSpace: "nowrap",
                 }}
               >
-                Full Page
+                /devai
               </Link>
+
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
@@ -217,6 +276,7 @@ export default function DevAiButton() {
                   color: "#ffffff",
                   border: "1px solid rgba(255, 255, 255, 0.25)",
                   flexShrink: 0,
+                  cursor: "pointer",
                 }}
               >
                 ✕
