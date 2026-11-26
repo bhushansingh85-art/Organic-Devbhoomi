@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { GoogleGenAI } from "@google/genai";
 
 const QUICK_PROMPTS = [
@@ -22,9 +21,10 @@ Rules:
 
 type ViewMode = "full" | "half";
 
-export default function DevAiButton() {
+export default function DevAi() {
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("full");
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     {
       role: "model",
@@ -35,14 +35,49 @@ export default function DevAiButton() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const previousUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const updateScreenType = () => setIsMobileScreen(mediaQuery.matches);
+    updateScreenType();
+
+    mediaQuery.addEventListener("change", updateScreenType);
+    return () => mediaQuery.removeEventListener("change", updateScreenType);
+  }, []);
+
+  const setDevAiUrl = () => {
+    if (typeof window === "undefined") return;
+    if (previousUrlRef.current === null) {
+      previousUrlRef.current = window.location.pathname + window.location.search + window.location.hash;
+    }
+    if (window.location.pathname !== "/devai") {
+      window.history.pushState({ devaiOpen: true }, "", "/devai");
+    }
+  };
+
+  const restorePreviousUrl = () => {
+    if (typeof window === "undefined") return;
+    if (previousUrlRef.current !== null && window.location.pathname === "/devai") {
+      window.history.pushState({}, "", previousUrlRef.current);
+    }
+    previousUrlRef.current = null;
+  };
 
   const openDevAiFullScreen = () => {
+    setDevAiUrl();
     setViewMode("full");
     setIsOpen(true);
   };
 
   const toggleHalfFullView = () => {
+    setDevAiUrl();
     setViewMode((prev) => (prev === "full" ? "half" : "full"));
+  };
+
+  const closeDevAi = () => {
+    setIsOpen(false);
+    restorePreviousUrl();
   };
 
   const cancelResponse = () => {
@@ -134,22 +169,39 @@ export default function DevAiButton() {
           color: "#ffffff",
           backgroundColor: "#071911",
         }
-      : {
-          position: "fixed",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: "auto",
-          width: "min(50vw, 720px)",
-          height: "100vh",
-          zIndex: 9999,
-          borderRadius: 0,
-          display: "flex",
-          flexDirection: "column",
-          color: "#ffffff",
-          backgroundColor: "#071911",
-          boxShadow: "-8px 0 28px rgba(0, 0, 0, 0.45)",
-        };
+      : isMobileScreen
+        ? {
+            position: "fixed",
+            top: "auto",
+            right: 0,
+            bottom: 0,
+            left: 0,
+            width: "100vw",
+            height: "50vh",
+            zIndex: 9999,
+            borderRadius: "20px 20px 0 0",
+            display: "flex",
+            flexDirection: "column",
+            color: "#ffffff",
+            backgroundColor: "#071911",
+            boxShadow: "0 -8px 28px rgba(0, 0, 0, 0.45)",
+          }
+        : {
+            position: "fixed",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: "auto",
+            width: "min(50vw, 720px)",
+            height: "100vh",
+            zIndex: 9999,
+            borderRadius: 0,
+            display: "flex",
+            flexDirection: "column",
+            color: "#ffffff",
+            backgroundColor: "#071911",
+            boxShadow: "-8px 0 28px rgba(0, 0, 0, 0.45)",
+          };
 
   return (
     <>
@@ -241,27 +293,9 @@ export default function DevAiButton() {
                 {viewMode === "full" ? "Half Page" : "Full Page"}
               </button>
 
-              <Link
-                href="/devai"
-                onClick={() => setIsOpen(false)}
-                style={{
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "6px 12px",
-                  borderRadius: "9999px",
-                  background: "#15803d",
-                  color: "#ffffff",
-                  border: "1px solid #4ade80",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                /devai
-              </Link>
-
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={closeDevAi}
                 aria-label="Close DevAi Interface"
                 style={{
                   height: "36px",
