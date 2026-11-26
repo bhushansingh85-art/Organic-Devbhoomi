@@ -8,7 +8,7 @@ export default function BottomNav() {
   const { dark } = useTheme();
 
   return (
-    <nav className={dark ? 'bottom-nav dark' : 'bottom-nav'}>
+    <nav className={dark ? 'bottom-nav dark' : 'bottom-nav'} aria-label="Bottom navigation">
       <Link href="/">
         <Sprout />
         <span>Home</span>
@@ -19,7 +19,7 @@ export default function BottomNav() {
         <span>Shop</span>
       </Link>
 
-      <Link href="/Profile/login">
+      <Link href="/Profile/Login">
         <UserRound />
         <span>Profile</span>
       </Link>
