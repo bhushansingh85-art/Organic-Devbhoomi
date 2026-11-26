@@ -1,123 +1,39 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
-
-type HeaderProps = {
-  cartCount?: number;
-  onOpenCart?: () => void;
-};
-
-function BrandMark() {
-  return (
-    <div className="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 64 54">
-        <path
-          d="M4 45 25 17l10 13L45 15l15 30H4Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3.4"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M25 17 31 25 35 30M13 45c5-9 13-13 23-12M35 33c4-7 10-10 17-11"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M35 33c-1-7 2-12 9-15 1 7-2 12-9 15Z"
-          fill="currentColor"
-        />
-      </svg>
-    </div>
-  );
-}
-
-const leafChoices = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/collections' },
-  { label: 'Our Story', href: '/#story' },
-  { label: 'Journal', href: '/#journal' },
-];
-
-export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
-  const router = useRouter();
-  const { dark, toggleDark } = useTheme();
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute('data-theme', dark ? 'dark' : 'light');
-    root.classList.toggle('dark', Boolean(dark));
-  }, [dark]);
-
-  const handleBasketClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (onOpenCart) {
-      e.preventDefault();
-      onOpenCart();
-    }
-  };
-
-  const handleAccountClick = () => {
-    router.push('/profile');
-  };
-
-  return (
-    <header
-      className="header"
-      style={{
-        background: dark ? 'var(--bg)' : '#ffffff',
-        backdropFilter: 'none',
-        WebkitBackdropFilter: 'none',
-        opacity: 1,
-        borderBottom: '1px solid var(--border)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}
-    >
-      <style>{`
+<style>{`
         @keyframes overlayStepReveal {
           0% {
             opacity: 0;
-            clip-path: inset(64px 0 82% 0);
+            clip-path: inset(68px 0 85% 0);
           }
-          35% {
+          30% {
             opacity: 1;
-            clip-path: inset(64px 0 56% 0);
+            clip-path: inset(68px 0 62% 0);
           }
-          70% {
+          65% {
             opacity: 1;
-            clip-path: inset(64px 0 26% 0);
+            clip-path: inset(68px 0 32% 0);
           }
           100% {
             opacity: 1;
-            clip-path: inset(64px 0 0 0);
+            clip-path: inset(68px 0 0 0);
           }
         }
 
         @keyframes bigLeafEnter {
           0% {
             opacity: 0;
-            transform: translateX(-64px) translateY(18px) rotate(-14deg) scale(0.84);
+            transform: translate3d(-70px, 20px, 0) rotate(-14deg) scale(0.84);
           }
           35% {
-            opacity: 0.85;
-            transform: translateX(-26px) translateY(8px) rotate(-6deg) scale(0.94);
+            opacity: 0.9;
+            transform: translate3d(-28px, 8px, 0) rotate(-6deg) scale(0.94);
           }
           72% {
             opacity: 1;
-            transform: translateX(8px) translateY(-2px) rotate(2deg) scale(1.02);
+            transform: translate3d(8px, -2px, 0) rotate(2deg) scale(1.02);
           }
           100% {
             opacity: 1;
-            transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
           }
         }
 
@@ -134,7 +50,8 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           justify-content: center;
           gap: 14px;
           overflow-y: auto;
-          animation: overlayStepReveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+          will-change: clip-path, opacity;
+          animation: overlayStepReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         .big-leaf-btn {
@@ -154,7 +71,8 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           border-radius: 8px 56px 10px 56px;
           box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
           cursor: pointer;
-          animation: bigLeafEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+          will-change: transform, opacity;
+          animation: bigLeafEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
           transition: transform 0.22s ease, background-color 0.22s ease;
         }
 
@@ -163,141 +81,3 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           background-color: #2d6a4f;
         }
       `}</style>
-
-      <button
-        type="button"
-        className="icon-btn mobile-menu"
-        aria-label="Toggle menu"
-        aria-expanded={mobileMenu}
-        onClick={() => setMobileMenu((prev) => !prev)}
-        style={{
-          width: 42,
-          height: 42,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4.5,
-          background: mobileMenu ? '#1b4332' : '#f4f6f4',
-          color: mobileMenu ? '#ffffff' : '#1b4332',
-          border: '1px solid rgba(27, 67, 50, 0.22)',
-          borderRadius: '999px',
-          cursor: 'pointer',
-          padding: 0,
-          position: mobileMenu ? 'fixed' : 'relative',
-          top: mobileMenu ? 14 : 'auto',
-          left: mobileMenu ? 14 : 'auto',
-          zIndex: 10001,
-          transition: 'background-color 0.25s ease, color 0.25s ease, top 0.25s ease',
-        }}
-      >
-        <span
-          style={{
-            width: 18,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            transform: mobileMenu ? 'translateY(6.5px) rotate(45deg)' : 'none',
-            transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          }}
-        />
-        <span
-          style={{
-            width: mobileMenu ? 0 : 12,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            opacity: mobileMenu ? 0 : 1,
-            transition: 'width 0.22s ease, opacity 0.2s ease',
-          }}
-        />
-        <span
-          style={{
-            width: 18,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            transform: mobileMenu ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
-            transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          }}
-        />
-      </button>
-
-      <Link className="brand" href="/">
-        <BrandMark />
-        <span>
-          <b>organic</b>
-          <strong>devbhoomi</strong>
-        </span>
-      </Link>
-
-      <nav className={mobileMenu ? 'nav open' : 'nav'}>
-        <Link href="/" onClick={() => setMobileMenu(false)}>
-          Home
-        </Link>
-        <Link href="/collections" onClick={() => setMobileMenu(false)}>
-          Shop
-        </Link>
-        <Link href="/#story" onClick={() => setMobileMenu(false)}>
-          Our Story
-        </Link>
-        <Link href="/#journal" onClick={() => setMobileMenu(false)}>
-          Journal
-        </Link>
-      </nav>
-
-      {mobileMenu && (
-        <div
-          className="leaf-screen-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Leaf navigation options"
-        >
-          {leafChoices.map((item, idx) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="big-leaf-btn"
-              style={{ animationDelay: `${idx * 160}ms` }}
-              onClick={() => setMobileMenu(false)}
-            >
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <div className="header-actions">
-        <label className="search-box">
-          <Search size={17} />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search plants, fruits..."
-          />
-        </label>
-        <button
-          type="button"
-          className="icon-btn theme-btn"
-          aria-label="Toggle theme"
-          onClick={toggleDark}
-        >
-          {dark ? <Sun size={19} /> : <Moon size={19} />}
-        </button>
-        <button
-          type="button"
-          className="icon-btn account-btn"
-          aria-label="Account"
-          onClick={handleAccountClick}
-        >
-          <UserRound size={19} />
-        </button>
-        <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
-          <ShoppingBasket size={19} />
-          <span>Basket</span>
-          <i>{cartCount}</i>
-        </Link>
-      </div>
-    </header>
-  );
-}
