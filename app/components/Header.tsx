@@ -76,10 +76,56 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
         aria-label="Toggle menu"
         aria-expanded={mobileMenu}
         onClick={() => setMobileMenu((prev) => !prev)}
+        style={{
+          width: 40,
+          height: 40,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 4.5,
+          background: mobileMenu ? '#174d35' : 'var(--surface)',
+          color: mobileMenu ? '#ffffff' : 'var(--text)',
+          border: '1px solid var(--border)',
+          borderRadius: '999px',
+          padding: 0,
+          position: mobileMenu ? 'fixed' : 'relative',
+          top: mobileMenu ? 14 : 'auto',
+          left: mobileMenu ? 14 : 'auto',
+          zIndex: 10001,
+          transition: 'background-color 0.25s ease, color 0.25s ease',
+        }}
       >
-        <span />
-        <span />
-        <span />
+        <span
+          style={{
+            width: 18,
+            height: 2,
+            borderRadius: 999,
+            background: 'currentColor',
+            transform: mobileMenu ? 'translateY(6.5px) rotate(45deg)' : 'none',
+            transition: 'transform 0.25s ease',
+          }}
+        />
+        <span
+          style={{
+            width: 12,
+            height: 2,
+            borderRadius: 999,
+            background: 'currentColor',
+            opacity: mobileMenu ? 0 : 1,
+            transition: 'opacity 0.2s ease',
+          }}
+        />
+        <span
+          style={{
+            width: 18,
+            height: 2,
+            borderRadius: 999,
+            background: 'currentColor',
+            transform: mobileMenu ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
+            transition: 'transform 0.25s ease',
+          }}
+        />
       </button>
 
       <Link className="brand" href="/">
