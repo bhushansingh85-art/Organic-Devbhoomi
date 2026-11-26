@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, LogOut, Sprout, UserRound } from 'lucide-react';
+import Header from '../../components/Header';
+import { useTheme } from '../../context/ThemeContext';
 import Login from './login';
-import Header from '../components/Header';
-import { useTheme } from '../context/ThemeContext';
 
 interface UserProfile {
   name: string;
@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <Link
-                href="/collections"
+                href="/collections/"
                 className="primary-btn"
                 style={{ textDecoration: 'none' }}
               >
