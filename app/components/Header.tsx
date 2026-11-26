@@ -65,7 +65,7 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
   };
 
   const handleAccountClick = () => {
-    router.push('/Login');
+    router.push('/Profile/login');
   };
 
   return (
