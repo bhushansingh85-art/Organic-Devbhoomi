@@ -19,7 +19,7 @@ export default function BottomNav() {
         <span>Shop</span>
       </Link>
 
-      <Link href="/profile/login">
+      <Link href="/Profile/login">
         <UserRound />
         <span>Profile</span>
       </Link>
