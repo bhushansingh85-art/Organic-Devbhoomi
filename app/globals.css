@@ -2072,84 +2072,194 @@ button {
   }
 }
 
-@keyframes menuStepReveal {
-  0% {
+/* Replaced .leaf-screen-overlay & .big-leaf-btn with Botanical Slide Drawer */
+@keyframes botanicalBackdropFade {
+  from {
     opacity: 0;
-    clip-path: inset(68px 0 85% 0);
   }
-  33% {
+  to {
     opacity: 1;
-    clip-path: inset(68px 0 58% 0);
-  }
-  66% {
-    opacity: 1;
-    clip-path: inset(68px 0 30% 0);
-  }
-  100% {
-    opacity: 1;
-    clip-path: inset(68px 0 0 0);
   }
 }
 
-@keyframes leafStepEnter {
-  0% {
+@keyframes botanicalSheetSlideIn {
+  from {
     opacity: 0;
-    transform: translate3d(-72px, 16px, 0) rotate(-14deg) scale(0.84);
+    transform: translate3d(-32px, 0, 0) scale(0.985);
   }
-  40% {
-    opacity: 0.9;
-    transform: translate3d(-24px, 6px, 0) rotate(-5deg) scale(0.95);
-  }
-  75% {
+  to {
     opacity: 1;
-    transform: translate3d(8px, -2px, 0) rotate(2deg) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
-.leaf-screen-overlay {
+@keyframes botanicalItemReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(-16px, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.botanical-drawer-backdrop {
   position: fixed;
   inset: 0;
-  padding: 84px 20px 28px;
-  background: rgba(12, 34, 24, 0.72);
+  z-index: 9998;
+  background: rgba(17, 35, 28, 0.45);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  animation: botanicalBackdropFade 0.28s ease both;
+}
+
+.botanical-drawer-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(370px, 88vw);
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 20px 28px;
   overflow-y: auto;
-  will-change: clip-path, opacity;
-  animation: menuStepReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: var(--bg);
+  color: var(--text);
+  border-right: 1px solid var(--border);
+  box-shadow: 18px 0 50px rgba(17, 35, 28, 0.22);
+  animation: botanicalSheetSlideIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.big-leaf-btn {
-  position: relative;
+.site.dark .botanical-drawer-panel,
+.dark .botanical-drawer-panel {
+  background: linear-gradient(180deg, #152219 0%, #101913 100%);
+  box-shadow: 18px 0 55px rgba(0, 0, 0, 0.55);
+}
+
+.botanical-drawer-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  min-height: 68px;
-  padding: 16px 24px;
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  background-color: var(--green2);
-  border: 2px solid var(--lime);
-  border-radius: 8px 56px 10px 56px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
-  cursor: pointer;
-  will-change: transform, opacity;
-  animation: leafStepEnter 0.68s cubic-bezier(0.22, 1, 0.36, 1) both;
-  transition: transform 0.22s ease, background-color 0.22s ease;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-.big-leaf-btn:hover {
-  transform: translateX(8px) scale(1.01);
-  background-color: var(--green);
+.botanical-drawer-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.site.dark .botanical-drawer-tag,
+.dark .botanical-drawer-tag {
+  color: #a6c79b;
+}
+
+.botanical-drawer-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.botanical-drawer-close:hover {
+  transform: rotate(90deg);
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+}
+
+.botanical-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.botanical-nav-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: left;
+  opacity: 0;
+  animation: botanicalItemReveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.botanical-nav-card:hover {
+  transform: translateX(6px);
+  border-color: var(--green2);
+  background: var(--bg);
+  box-shadow: 0 8px 22px rgba(23, 77, 53, 0.1);
+}
+
+.site.dark .botanical-nav-card:hover,
+.dark .botanical-nav-card:hover {
+  border-color: var(--lime);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.botanical-nav-index {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  background: rgba(155, 189, 134, 0.22);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.site.dark .botanical-nav-index,
+.dark .botanical-nav-index {
+  color: #b5d4a9;
+  background: rgba(155, 189, 134, 0.14);
+}
+
+.botanical-nav-arrow {
+  font-size: 15px;
+  color: var(--sub);
+  transition: transform 0.22s ease, color 0.22s ease;
+}
+
+.botanical-nav-card:hover .botanical-nav-arrow {
+  transform: translateX(4px);
+  color: var(--green);
+}
+
+.botanical-drawer-footer {
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--sub);
 }

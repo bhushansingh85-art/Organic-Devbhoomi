@@ -11,6 +11,11 @@ type HeaderProps = {
   onOpenCart?: () => void;
 };
 
+type DrawerNavItem = {
+  label: string;
+  href: string;
+};
+
 function BrandMark() {
   return (
     <div className="brand-mark" aria-hidden="true">
@@ -38,11 +43,12 @@ function BrandMark() {
   );
 }
 
-const leafChoices = [
+const drawerItems: DrawerNavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/collections' },
+  { label: 'Shop Collection', href: '/collections' },
   { label: 'Our Story', href: '/#story' },
   { label: 'Journal', href: '/#journal' },
+  { label: 'Account & Login', href: '/Profile/Login' },
 ];
 
 export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
@@ -57,6 +63,25 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
     root.classList.toggle('dark', Boolean(dark));
   }, [dark]);
 
+  useEffect(() => {
+    if (!mobileMenu) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenu(false);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenu]);
+
   const handleBasketClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onOpenCart) {
       e.preventDefault();
@@ -65,136 +90,178 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
   };
 
   const handleAccountClick = () => {
-    router.push('/Profile/Login/');
+    router.push('/Profile/Login');
+  };
+
+  const handleDrawerNavigate = (href: string) => {
+    setMobileMenu(false);
+    router.push(href);
   };
 
   return (
-    <header className="header">
-      <button
-        type="button"
-        className="icon-btn mobile-menu"
-        aria-label="Toggle menu"
-        aria-expanded={mobileMenu}
-        onClick={() => setMobileMenu((prev) => !prev)}
-        style={{
-          width: 40,
-          height: 40,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4.5,
-          background: mobileMenu ? '#174d35' : 'var(--surface)',
-          color: mobileMenu ? '#ffffff' : 'var(--text)',
-          border: '1px solid var(--border)',
-          borderRadius: '999px',
-          padding: 0,
-          position: mobileMenu ? 'fixed' : 'relative',
-          top: mobileMenu ? 14 : 'auto',
-          left: mobileMenu ? 14 : 'auto',
-          zIndex: 10001,
-          transition: 'background-color 0.25s ease, color 0.25s ease',
-        }}
-      >
-        <span
+    <>
+      <header className="header">
+        <button
+          type="button"
+          className="icon-btn mobile-menu"
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenu}
+          onClick={() => setMobileMenu((prev) => !prev)}
           style={{
-            width: 18,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            transform: mobileMenu ? 'translateY(6.5px) rotate(45deg)' : 'none',
-            transition: 'transform 0.25s ease',
+            width: 40,
+            height: 40,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4.5,
+            background: mobileMenu ? '#174d35' : 'var(--surface)',
+            color: mobileMenu ? '#ffffff' : 'var(--text)',
+            border: '1px solid var(--border)',
+            borderRadius: '999px',
+            padding: 0,
+            position: mobileMenu ? 'fixed' : 'relative',
+            top: mobileMenu ? 14 : 'auto',
+            left: mobileMenu ? 14 : 'auto',
+            zIndex: 10001,
+            transition: 'background-color 0.25s ease, color 0.25s ease',
           }}
-        />
-        <span
-          style={{
-            width: 12,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            opacity: mobileMenu ? 0 : 1,
-            transition: 'opacity 0.2s ease',
-          }}
-        />
-        <span
-          style={{
-            width: 18,
-            height: 2,
-            borderRadius: 999,
-            background: 'currentColor',
-            transform: mobileMenu ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
-            transition: 'transform 0.25s ease',
-          }}
-        />
-      </button>
+        >
+          <span
+            style={{
+              width: 18,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              transform: mobileMenu ? 'translateY(6.5px) rotate(45deg)' : 'none',
+              transition: 'transform 0.25s ease',
+            }}
+          />
+          <span
+            style={{
+              width: 12,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              opacity: mobileMenu ? 0 : 1,
+              transition: 'opacity 0.2s ease',
+            }}
+          />
+          <span
+            style={{
+              width: 18,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              transform: mobileMenu ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
+              transition: 'transform 0.25s ease',
+            }}
+          />
+        </button>
 
-      <Link className="brand" href="/">
-        <BrandMark />
-        <span>
-          <b>organic</b>
-          <strong>devbhoomi</strong>
-        </span>
-      </Link>
+        <Link className="brand" href="/">
+          <BrandMark />
+          <span>
+            <b>organic</b>
+            <strong>devbhoomi</strong>
+          </span>
+        </Link>
 
-      <nav className="nav">
-        <Link href="/">Home</Link>
-        <Link href="/collections">Shop</Link>
-        <Link href="/#story">Our Story</Link>
-        <Link href="/#journal">Journal</Link>
-      </nav>
+        <nav className="nav">
+          <Link href="/">Home</Link>
+          <Link href="/collections">Shop</Link>
+          <Link href="/#story">Our Story</Link>
+          <Link href="/#journal">Journal</Link>
+        </nav>
+
+        <div className="header-actions">
+          <label className="search-box">
+            <Search size={17} />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search plants, fruits..."
+            />
+          </label>
+          <button
+            type="button"
+            className="icon-btn theme-btn"
+            aria-label="Toggle theme"
+            onClick={toggleDark}
+          >
+            {dark ? <Sun size={19} /> : <Moon size={19} />}
+          </button>
+          <button
+            type="button"
+            className="icon-btn account-btn"
+            aria-label="Account"
+            onClick={handleAccountClick}
+          >
+            <UserRound size={19} />
+          </button>
+          <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
+            <ShoppingBasket size={19} />
+            <span>Basket</span>
+            <i>{cartCount}</i>
+          </Link>
+        </div>
+      </header>
 
       {mobileMenu && (
-        <div
-          className="leaf-screen-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Leaf navigation options"
-        >
-          {leafChoices.map((item, idx) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="big-leaf-btn"
-              style={{ animationDelay: `${idx * 160}ms` }}
-              onClick={() => setMobileMenu(false)}
-            >
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <div className="header-actions">
-        <label className="search-box">
-          <Search size={17} />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search plants, fruits..."
+        <>
+          <div
+            className="botanical-drawer-backdrop"
+            onClick={() => setMobileMenu(false)}
+            aria-hidden="true"
           />
-        </label>
-        <button
-          type="button"
-          className="icon-btn theme-btn"
-          aria-label="Toggle theme"
-          onClick={toggleDark}
-        >
-          {dark ? <Sun size={19} /> : <Moon size={19} />}
-        </button>
-        <button
-          type="button"
-          className="icon-btn account-btn"
-          aria-label="Account"
-          onClick={handleAccountClick}
-        >
-          <UserRound size={19} />
-        </button>
-        <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
-          <ShoppingBasket size={19} />
-          <span>Basket</span>
-          <i>{cartCount}</i>
-        </Link>
-      </div>
-    </header>
+
+          <aside
+            className="botanical-drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Organic Devbhoomi Menu"
+          >
+            <div>
+              <div className="botanical-drawer-header" style={{ paddingLeft: 48 }}>
+                <span className="botanical-drawer-tag">organic devbhoomi</span>
+                <button
+                  type="button"
+                  className="botanical-drawer-close"
+                  onClick={() => setMobileMenu(false)}
+                  aria-label="Close navigation menu"
+                >
+                  ×
+                </button>
+              </div>
+
+              <nav className="botanical-nav-list" style={{ marginTop: 18 }}>
+                {drawerItems.map((item, idx) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className="botanical-nav-card"
+                    style={{ animationDelay: `${80 + idx * 60}ms` }}
+                    onClick={() => handleDrawerNavigate(item.href)}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span className="botanical-nav-index">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span>{item.label}</span>
+                    </span>
+                    <span className="botanical-nav-arrow">→</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="botanical-drawer-footer">
+              <span>Tap outside or press Esc</span>
+              <span>{drawerItems.length} links</span>
+            </div>
+          </aside>
+        </>
+      )}
+    </>
   );
 }
