@@ -39,7 +39,13 @@ export default function DevAi() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const updateScreenType = () => setIsMobileScreen(mediaQuery.matches);
+    const updateScreenType = () => {
+      const mobile = mediaQuery.matches;
+      setIsMobileScreen(mobile);
+      if (mobile) {
+        setViewMode("half");
+      }
+    };
     updateScreenType();
 
     mediaQuery.addEventListener("change", updateScreenType);
@@ -49,7 +55,8 @@ export default function DevAi() {
   const setDevAiUrl = () => {
     if (typeof window === "undefined") return;
     if (previousUrlRef.current === null) {
-      previousUrlRef.current = window.location.pathname + window.location.search + window.location.hash;
+      previousUrlRef.current =
+        window.location.pathname + window.location.search + window.location.hash;
     }
     if (window.location.pathname !== "/devai") {
       window.history.pushState({ devaiOpen: true }, "", "/devai");
@@ -64,13 +71,17 @@ export default function DevAi() {
     previousUrlRef.current = null;
   };
 
-  const openDevAiFullScreen = () => {
+  const openDevAi = () => {
+    const isPhone =
+      typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
+    setIsMobileScreen(isPhone);
     setDevAiUrl();
-    setViewMode("full");
+    setViewMode(isPhone ? "half" : "full");
     setIsOpen(true);
   };
 
   const toggleHalfFullView = () => {
+    if (isMobileScreen) return;
     setDevAiUrl();
     setViewMode((prev) => (prev === "full" ? "half" : "full"));
   };
@@ -129,7 +140,8 @@ export default function DevAi() {
 
       if (controller.signal.aborted) return;
 
-      const replyText = response.text || "I'm sorry.I couldn't provide a response right now.";
+      const replyText =
+        response.text || "I'm sorry.I couldn't provide a response right now.";
       setMessages((prev) => [...prev, { role: "model", text: replyText }]);
     } catch (error) {
       if (controller.signal.aborted) return;
@@ -152,8 +164,10 @@ export default function DevAi() {
     }
   }, [messages, isLoading, isOpen, viewMode]);
 
+  const activeMode: ViewMode = isMobileScreen ? "half" : viewMode;
+
   const panelLayoutStyle: React.CSSProperties =
-    viewMode === "full"
+    activeMode === "full"
       ? {
           position: "fixed",
           top: 0,
@@ -208,8 +222,8 @@ export default function DevAi() {
       <div className="devai-round-orb">
         <button
           type="button"
-          onClick={openDevAiFullScreen}
-          aria-label="Open DevAi Full Screen"
+          onClick={openDevAi}
+          aria-label="Open DevAi"
           className="devai-round-btn"
         >
           DevAi
@@ -235,7 +249,14 @@ export default function DevAi() {
             }}
           >
             <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                }}
+              >
                 <h2
                   style={{
                     fontWeight: 700,
@@ -259,7 +280,7 @@ export default function DevAi() {
                     border: "1px solid rgba(74, 222, 128, 0.45)",
                   }}
                 >
-                  {viewMode === "full" ? "Full Screen" : "Half Page"}
+                  {activeMode === "full" ? "Full Page" : "Half Page"}
                 </span>
               </div>
               <p
@@ -274,24 +295,33 @@ export default function DevAi() {
               </p>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-              <button
-                type="button"
-                onClick={toggleHalfFullView}
-                style={{
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "6px 12px",
-                  borderRadius: "9999px",
-                  background: "#065f46",
-                  color: "#ffffff",
-                  border: "1px solid #4ade80",
-                  whiteSpace: "nowrap",
-                  cursor: "pointer",
-                }}
-              >
-                {viewMode === "full" ? "Half Page" : "Full Page"}
-              </button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexShrink: 0,
+              }}
+            >
+              {!isMobileScreen && (
+                <button
+                  type="button"
+                  onClick={toggleHalfFullView}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    padding: "6px 12px",
+                    borderRadius: "9999px",
+                    background: "#065f46",
+                    color: "#ffffff",
+                    border: "1px solid #4ade80",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                  }}
+                >
+                  {activeMode === "full" ? "Half Page" : "Full Page"}
+                </button>
+              )}
 
               <button
                 type="button"

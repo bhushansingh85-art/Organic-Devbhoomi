@@ -21,7 +21,7 @@ Rules:
 
 type ViewMode = "full" | "half";
 
-export default function DevAiButton() {
+export default function DevAi() {
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("full");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
@@ -39,7 +39,13 @@ export default function DevAiButton() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const updateScreenType = () => setIsMobileScreen(mediaQuery.matches);
+    const updateScreenType = () => {
+      const mobile = mediaQuery.matches;
+      setIsMobileScreen(mobile);
+      if (mobile) {
+        setViewMode("half");
+      }
+    };
     updateScreenType();
 
     mediaQuery.addEventListener("change", updateScreenType);
@@ -49,7 +55,8 @@ export default function DevAiButton() {
   const setDevAiUrl = () => {
     if (typeof window === "undefined") return;
     if (previousUrlRef.current === null) {
-      previousUrlRef.current = window.location.pathname + window.location.search + window.location.hash;
+      previousUrlRef.current =
+        window.location.pathname + window.location.search + window.location.hash;
     }
     if (window.location.pathname !== "/devai") {
       window.history.pushState({ devaiOpen: true }, "", "/devai");
@@ -64,13 +71,17 @@ export default function DevAiButton() {
     previousUrlRef.current = null;
   };
 
-  const openFullPageView = () => {
+  const openDevAi = () => {
+    const isPhone =
+      typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
+    setIsMobileScreen(isPhone);
     setDevAiUrl();
-    setViewMode("full");
+    setViewMode(isPhone ? "half" : "full");
     setIsOpen(true);
   };
 
-  const toggleViewMode = () => {
+  const toggleHalfFullView = () => {
+    if (isMobileScreen) return;
     setDevAiUrl();
     setViewMode((prev) => (prev === "full" ? "half" : "full"));
   };
@@ -129,7 +140,8 @@ export default function DevAiButton() {
 
       if (controller.signal.aborted) return;
 
-      const replyText = response.text || "I'm sorry.I couldn't provide a response right now.";
+      const replyText =
+        response.text || "I'm sorry.I couldn't provide a response right now.";
       setMessages((prev) => [...prev, { role: "model", text: replyText }]);
     } catch (error) {
       if (controller.signal.aborted) return;
@@ -152,8 +164,10 @@ export default function DevAiButton() {
     }
   }, [messages, isLoading, isOpen, viewMode]);
 
-  const shellStyle: React.CSSProperties =
-    viewMode === "full"
+  const activeMode: ViewMode = isMobileScreen ? "half" : viewMode;
+
+  const panelLayoutStyle: React.CSSProperties =
+    activeMode === "full"
       ? {
           position: "fixed",
           top: 0,
@@ -208,8 +222,8 @@ export default function DevAiButton() {
       <div className="devai-round-orb">
         <button
           type="button"
-          onClick={openFullPageView}
-          aria-label="Open DevAi Full Page"
+          onClick={openDevAi}
+          aria-label="Open DevAi"
           className="devai-round-btn"
         >
           DevAi
@@ -219,7 +233,7 @@ export default function DevAiButton() {
       {isOpen && (
         <div
           className="devai-newpage-shell border border-green-500/35 overflow-hidden"
-          style={shellStyle}
+          style={panelLayoutStyle}
         >
           {/* Header */}
           <div
@@ -235,7 +249,14 @@ export default function DevAiButton() {
             }}
           >
             <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                }}
+              >
                 <h2
                   style={{
                     fontWeight: 700,
@@ -259,7 +280,7 @@ export default function DevAiButton() {
                     border: "1px solid rgba(74, 222, 128, 0.45)",
                   }}
                 >
-                  {viewMode === "full" ? "Full Page" : "Half Page"}
+                  {activeMode === "full" ? "Full Page" : "Half Page"}
                 </span>
               </div>
               <p
@@ -274,24 +295,33 @@ export default function DevAiButton() {
               </p>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-              <button
-                type="button"
-                onClick={toggleViewMode}
-                style={{
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "6px 12px",
-                  borderRadius: "9999px",
-                  background: "#065f46",
-                  color: "#ffffff",
-                  border: "1px solid #4ade80",
-                  whiteSpace: "nowrap",
-                  cursor: "pointer",
-                }}
-              >
-                {viewMode === "full" ? "Half Page" : "Full Page"}
-              </button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexShrink: 0,
+              }}
+            >
+              {!isMobileScreen && (
+                <button
+                  type="button"
+                  onClick={toggleHalfFullView}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    padding: "6px 12px",
+                    borderRadius: "9999px",
+                    background: "#065f46",
+                    color: "#ffffff",
+                    border: "1px solid #4ade80",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                  }}
+                >
+                  {activeMode === "full" ? "Half Page" : "Full Page"}
+                </button>
+              )}
 
               <button
                 type="button"
