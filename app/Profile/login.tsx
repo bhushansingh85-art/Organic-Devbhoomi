@@ -4,10 +4,29 @@ import React, { useState, useEffect, useRef } from "react";
 
 const BASE_PATH = "/Organic-Devbhoomi";
 
-export default function Login() {
-  const [isLogin, setIsLogin] = useState(true);
+export interface LoginProps {
+  initialMode?: "login" | "register";
+  onSuccess?: (userInfo: {
+    name?: string;
+    email: string;
+    mode: "login" | "register";
+  }) => void;
+}
+
+export default function Login({
+  initialMode = "login",
+  onSuccess,
+}: LoginProps) {
+  const [isLogin, setIsLogin] = useState(initialMode === "login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const previousUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    setIsLogin(initialMode === "login");
+  }, [initialMode]);
 
   const syncAuthUrl = (loginMode: boolean) => {
     if (typeof window === "undefined") return;
@@ -22,7 +41,11 @@ export default function Login() {
       : `${BASE_PATH}/register`;
 
     if (window.location.pathname !== targetPath) {
-      window.history.pushState({ authMode: loginMode ? "login" : "register" }, "", targetPath);
+      window.history.pushState(
+        { authMode: loginMode ? "login" : "register" },
+        "",
+        targetPath
+      );
     }
   };
 
@@ -52,8 +75,15 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // यहाँ आप अपना लॉग-इन या रजिस्टर का लॉजिक डालेंगे
-    setTimeout(() => setIsLoading(false), 2000);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      onSuccess?.({
+        name: isLogin ? undefined : name.trim(),
+        email: email.trim(),
+        mode: isLogin ? "login" : "register",
+      });
+    }, 1000);
   };
 
   return (
@@ -119,6 +149,8 @@ export default function Login() {
               <input
                 type="text"
                 placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 style={{
                   width: "100%",
@@ -148,6 +180,8 @@ export default function Login() {
             <input
               type="email"
               placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               style={{
                 width: "100%",
@@ -176,6 +210,8 @@ export default function Login() {
             <input
               type="password"
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               style={{
                 width: "100%",
