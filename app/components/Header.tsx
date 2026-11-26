@@ -83,14 +83,37 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
       }}
     >
       <style>{`
+        @keyframes overlayStepReveal {
+          0% {
+            opacity: 0;
+            clip-path: inset(64px 0 82% 0);
+          }
+          35% {
+            opacity: 1;
+            clip-path: inset(64px 0 56% 0);
+          }
+          70% {
+            opacity: 1;
+            clip-path: inset(64px 0 26% 0);
+          }
+          100% {
+            opacity: 1;
+            clip-path: inset(64px 0 0 0);
+          }
+        }
+
         @keyframes bigLeafEnter {
           0% {
             opacity: 0;
-            transform: translateX(-80px) translateY(28px) rotate(-18deg) scale(0.78);
+            transform: translateX(-64px) translateY(18px) rotate(-14deg) scale(0.84);
           }
-          68% {
+          35% {
+            opacity: 0.85;
+            transform: translateX(-26px) translateY(8px) rotate(-6deg) scale(0.94);
+          }
+          72% {
             opacity: 1;
-            transform: translateX(8px) translateY(-2px) rotate(2deg) scale(1.03);
+            transform: translateX(8px) translateY(-2px) rotate(2deg) scale(1.02);
           }
           100% {
             opacity: 1;
@@ -111,6 +134,7 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           justify-content: center;
           gap: 14px;
           overflow-y: auto;
+          animation: overlayStepReveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         .big-leaf-btn {
@@ -130,7 +154,7 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
           border-radius: 8px 56px 10px 56px;
           box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
           cursor: pointer;
-          animation: bigLeafEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation: bigLeafEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
           transition: transform 0.22s ease, background-color 0.22s ease;
         }
 
@@ -234,7 +258,7 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
               key={item.label}
               href={item.href}
               className="big-leaf-btn"
-              style={{ animationDelay: `${idx * 90}ms` }}
+              style={{ animationDelay: `${idx * 160}ms` }}
               onClick={() => setMobileMenu(false)}
             >
               <span>{item.label}</span>
