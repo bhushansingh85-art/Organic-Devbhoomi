@@ -2072,7 +2072,7 @@ button {
   }
 }
 
-/* Botanical Leaf Unfurl Drawer */
+/* Botanical Leaf Unfurl Drawer & Floating Leaves */
 @keyframes botanicalBackdropFade {
   from {
     opacity: 0;
@@ -2093,7 +2093,23 @@ button {
   }
 }
 
-/* पत्तियों के खिलने और बाहर आने का एनीमेशन */
+/* पत्तियों के एक-एक करके उभरने (pop / unfurl) का एनीमेशन */
+@keyframes botanicalLeafPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-18deg) translate3d(-18px, 16px, 0);
+  }
+  65% {
+    opacity: 0.95;
+    transform: scale(1.06) rotate(3deg) translate3d(2px, -2px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translate3d(0, 0, 0);
+  }
+}
+
+/* मेनू कार्ड्स के पत्तों की तरह खुलने का एनीमेशन */
 @keyframes botanicalLeafUnfurl {
   0% {
     opacity: 0;
@@ -2119,6 +2135,68 @@ button {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   animation: botanicalBackdropFade 0.28s ease both;
+}
+
+/* स्क्रीन पर अलग-अलग जगह आने वाले पत्तों की लेयर */
+.botanical-leaf-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.botanical-leaf {
+  position: fixed;
+  width: clamp(130px, 34vw, 220px);
+  height: clamp(82px, 21vw, 136px);
+  background: linear-gradient(
+    135deg,
+    rgba(23, 77, 53, 0.92) 0%,
+    rgba(45, 104, 75, 0.88) 65%,
+    rgba(155, 189, 134, 0.82) 100%
+  );
+  border: 1px solid rgba(181, 212, 169, 0.55);
+  /* आपके बनाए पत्ते जैसा नोकदार + उभरा हुआ शेप */
+  border-radius: 85% 12% 82% 18% / 88% 15% 85% 16%;
+  box-shadow:
+    0 14px 34px rgba(17, 35, 28, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  opacity: 0;
+  transform-origin: bottom left;
+  animation: botanicalLeafPop 0.56s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* पत्ते की बीच की नस (leaf vein) */
+.botanical-leaf::after {
+  content: '';
+  position: absolute;
+  left: 14%;
+  right: 16%;
+  top: 52%;
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.45), transparent);
+  transform: rotate(-16deg);
+}
+
+/* 3 पत्ते — जैसा आपने इमेज में दिखाया */
+.botanical-leaf--1 {
+  top: 15%;
+  left: 22%;
+  animation-delay: 0.06s;
+}
+
+.botanical-leaf--2 {
+  top: 40%;
+  left: 34%;
+  transform-origin: bottom left;
+  animation-delay: 0.18s;
+}
+
+.botanical-leaf--3 {
+  top: 63%;
+  left: 24%;
+  animation-delay: 0.3s;
 }
 
 .botanical-drawer-panel {

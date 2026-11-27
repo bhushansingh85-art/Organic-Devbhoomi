@@ -215,6 +215,12 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
             aria-hidden="true"
           />
 
+          <div className="botanical-leaf-layer" aria-hidden="true">
+            <span className="botanical-leaf botanical-leaf--1" />
+            <span className="botanical-leaf botanical-leaf--2" />
+            <span className="botanical-leaf botanical-leaf--3" />
+          </div>
+
           <aside
             className="botanical-drawer-panel"
             role="dialog"
