@@ -1,92 +1,101 @@
-import React, { useState, useEffect } from 'react';
+'use client';
 
-export interface NavItem {
-  id: string;
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Search, ShoppingBasket, Moon, Sun, UserRound } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+
+type HeaderProps = {
+  cartCount?: number;
+  onOpenCart?: () => void;
+};
+
+type DrawerNavItem = {
   label: string;
   href: string;
+};
+
+function BrandMark() {
+  return (
+    <div className="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 54">
+        <path
+          d="M4 45 25 17l10 13L45 15l15 30H4Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3.4"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M25 17 31 25 35 30M13 45c5-9 13-13 23-12M35 33c4-7 10-10 17-11"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M35 33c-1-7 2-12 9-15 1 7-2 12-9 15Z"
+          fill="currentColor"
+        />
+      </svg>
+    </div>
+  );
 }
 
-export interface HeaderProps {
-  navItems?: NavItem[];
-  searchQuery?: string;
-  onSearchChange?: (value: string) => void;
-  cartCount?: number;
-  isDark?: boolean;
-  onToggleTheme?: () => void;
-  onOpenCart?: () => void;
-  onOpenAccount?: () => void;
-}
-
-const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', href: '#home' },
-  { id: 'shop', label: 'Shop', href: '#shop' },
-  { id: 'about', label: 'About', href: '#about' },
+const drawerItems: DrawerNavItem[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Shop Collection', href: '/collections' },
+  { label: 'Our Story', href: '/#story' },
+  { label: 'Journal', href: '/#journal' },
+  { label: 'Account & Login', href: '/Profile/Login' },
 ];
 
-const LEAF_POSITION_CLASSES: readonly string[] = [
-  'botanical-leaf--1',
-  'botanical-leaf--2',
-  'botanical-leaf--3',
-];
-
-export const Header: React.FC<HeaderProps> = ({
-  navItems = DEFAULT_NAV_ITEMS,
-  searchQuery = '',
-  onSearchChange,
-  cartCount = 0,
-  isDark = false,
-  onToggleTheme,
-  onOpenCart,
-  onOpenAccount,
-}) => {
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [internalSearch, setInternalSearch] = useState<string>(searchQuery);
+export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
+  const router = useRouter();
+  const { dark, toggleDark } = useTheme();
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
-    setInternalSearch(searchQuery);
-  }, [searchQuery]);
+    const root = document.documentElement;
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    root.classList.toggle('dark', Boolean(dark));
+  }, [dark]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent): void => {
+    if (!mobileMenu) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setMenuOpen(false);
+        setMobileMenu(false);
       }
     };
 
-    if (menuOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
-  }, [menuOpen]);
+  }, [mobileMenu]);
 
-  const handleToggleMenu = (): void => {
-    setMenuOpen((prev) => !prev);
-  };
-
-  const handleCloseMenu = (): void => {
-    setMenuOpen(false);
-  };
-
-  const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    setInternalSearch(value);
-    if (onSearchChange) {
-      onSearchChange(value);
+  const handleBasketClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onOpenCart) {
+      e.preventDefault();
+      onOpenCart();
     }
   };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    if (onSearchChange) {
-      onSearchChange(internalSearch);
-    }
+  const handleAccountClick = () => {
+    router.push('/Profile/Login');
+  };
+
+  const handleDrawerNavigate = (href: string) => {
+    setMobileMenu(false);
+    router.push(href);
   };
 
   return (
@@ -94,148 +103,171 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="header">
         <button
           type="button"
-          className="mobile-menu"
-          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={menuOpen}
-          onClick={handleToggleMenu}
+          className="icon-btn mobile-menu"
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenu}
+          onClick={() => setMobileMenu((prev) => !prev)}
+          style={{
+            width: 40,
+            height: 40,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 4.5,
+            background: mobileMenu ? '#174d35' : 'var(--surface)',
+            color: mobileMenu ? '#ffffff' : 'var(--text)',
+            border: '1px solid var(--border)',
+            borderRadius: '999px',
+            padding: 0,
+            position: mobileMenu ? 'fixed' : 'relative',
+            top: mobileMenu ? 14 : 'auto',
+            left: mobileMenu ? 14 : 'auto',
+            zIndex: 10001,
+            transition: 'background-color 0.25s ease, color 0.25s ease',
+          }}
         >
-          <span />
-          <span />
-          <span />
+          <span
+            style={{
+              width: 18,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              transform: mobileMenu ? 'translateY(6.5px) rotate(45deg)' : 'none',
+              transition: 'transform 0.25s ease',
+            }}
+          />
+          <span
+            style={{
+              width: 12,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              opacity: mobileMenu ? 0 : 1,
+              transition: 'opacity 0.2s ease',
+            }}
+          />
+          <span
+            style={{
+              width: 18,
+              height: 2,
+              borderRadius: 999,
+              background: 'currentColor',
+              transform: mobileMenu ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
+              transition: 'transform 0.25s ease',
+            }}
+          />
         </button>
 
-        <a href="#home" className="brand" onClick={handleCloseMenu}>
-          <span className="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 36 36" fill="none">
-              <path
-                d="M18 4C10 10 7 18 11 27C18 25 25 19 28 10C25 7 22 5 18 4Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+        <Link className="brand" href="/">
+          <BrandMark />
           <span>
-            <b>BOTANICAL</b>
-            <strong>STUDIO</strong>
+            <b>organic</b>
+            <strong>devbhoomi</strong>
           </span>
-        </a>
+        </Link>
 
-        <nav className={`nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
-          {navItems.map((item) => (
-            <a key={item.id} href={item.href} onClick={handleCloseMenu}>
-              {item.label}
-            </a>
-          ))}
+        <nav className="nav">
+          <Link href="/">Home</Link>
+          <Link href="/collections">Shop</Link>
+          <Link href="/#story">Our Story</Link>
+          <Link href="/#journal">Journal</Link>
         </nav>
 
         <div className="header-actions">
-          <form className="search-box" onSubmit={handleSearchSubmit} role="search">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+          <label className="search-box">
+            <Search size={17} />
             <input
-              type="search"
-              placeholder="Search plants..."
-              aria-label="Search plants"
-              value={internalSearch}
-              onChange={handleSearchInput}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search plants, fruits..."
             />
-          </form>
-
-          {onOpenAccount && (
-            <button
-              type="button"
-              className="icon-btn account-btn"
-              aria-label="Account"
-              onClick={onOpenAccount}
-            >
-              <svg
-                width="17"
-                height="17"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                aria-hidden="true"
-              >
-                <path d="M20 21a8 8 0 0 0-16 0" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </button>
-          )}
-
-          {onToggleTheme && (
-            <button
-              type="button"
-              className="icon-btn"
-              aria-label="Toggle dark mode"
-              onClick={onToggleTheme}
-            >
-              {isDark ? '☀' : '☾'}
-            </button>
-          )}
-
-          {onOpenCart && (
-            <button
-              type="button"
-              className="cart-trigger"
-              aria-label="Open cart"
-              onClick={onOpenCart}
-            >
-              <span>Cart</span>
-              <i>{cartCount}</i>
-            </button>
-          )}
+          </label>
+          <button
+            type="button"
+            className="icon-btn theme-btn"
+            aria-label="Toggle theme"
+            onClick={toggleDark}
+          >
+            {dark ? <Sun size={19} /> : <Moon size={19} />}
+          </button>
+          <button
+            type="button"
+            className="icon-btn account-btn"
+            aria-label="Account"
+            onClick={handleAccountClick}
+          >
+            <UserRound size={19} />
+          </button>
+          <Link className="cart-trigger" href="/cart" onClick={handleBasketClick}>
+            <ShoppingBasket size={19} />
+            <span>Basket</span>
+            <i>{cartCount}</i>
+          </Link>
         </div>
       </header>
 
-      {menuOpen && (
+      {mobileMenu && (
         <>
           <div
             className="botanical-drawer-backdrop"
-            onClick={handleCloseMenu}
+            onClick={() => setMobileMenu(false)}
             aria-hidden="true"
           />
 
-          <div
-            className="botanical-leaf-layer"
+          <div className="botanical-leaf-layer" aria-hidden="true">
+            <span className="botanical-leaf botanical-leaf--1" />
+            <span className="botanical-leaf botanical-leaf--2" />
+            <span className="botanical-leaf botanical-leaf--3" />
+          </div>
+
+          <aside
+            className="botanical-drawer-panel"
             role="dialog"
             aria-modal="true"
-            aria-label="Mobile botanical navigation menu"
-            onClick={handleCloseMenu}
+            aria-label="Organic Devbhoomi Menu"
           >
-            {navItems.map((item, index) => {
-              const positionClass =
-                LEAF_POSITION_CLASSES[index % LEAF_POSITION_CLASSES.length];
-
-              return (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className={`botanical-leaf ${positionClass}`}
-                  style={{ animationDelay: `${0.06 + index * 0.12}s` }}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    e.stopPropagation();
-                    handleCloseMenu();
-                  }}
+            <div>
+              <div className="botanical-drawer-header" style={{ paddingLeft: 48 }}>
+                <span className="botanical-drawer-tag">organic devbhoomi</span>
+                <button
+                  type="button"
+                  className="botanical-drawer-close"
+                  onClick={() => setMobileMenu(false)}
+                  aria-label="Close navigation menu"
                 >
-                  <span>{item.label}</span>
-                </a>
-              );
-            })}
-          </div>
+                  ×
+                </button>
+              </div>
+
+              <nav className="botanical-nav-list" style={{ marginTop: 18 }}>
+                {drawerItems.map((item, idx) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className="botanical-nav-card"
+                    style={{ animationDelay: `${80 + idx * 60}ms` }}
+                    onClick={() => handleDrawerNavigate(item.href)}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span className="botanical-nav-index">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span>{item.label}</span>
+                    </span>
+                    <span className="botanical-nav-arrow">→</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="botanical-drawer-footer">
+              <span>Tap outside or press Esc</span>
+              <span>{drawerItems.length} links</span>
+            </div>
+          </aside>
         </>
       )}
     </>
   );
-};
-
-export default Header;
+}
