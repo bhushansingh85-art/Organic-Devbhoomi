@@ -6,7 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { auth, googleProvider } from "../lib/firebase"; // Adjust path if needed
+import { auth, googleProvider } from "../../../lib/firebase"; // Adjust path if needed
 
 export default function Login() {
   const [email, setEmail] = useState("");
