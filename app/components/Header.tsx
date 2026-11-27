@@ -89,8 +89,9 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
     }
   };
 
- 
-  
+  const handleAccountClick = () => {
+    router.push('/Profile/Login');
+  };
 
   const handleDrawerNavigate = (href: string) => {
     setMobileMenu(false);
