@@ -1,6 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,9 +11,9 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Next.js में बार-बार ऐप इनिशियलाइज़ होने से रोकने के लिए
+// Initialize Firebase safely for Next.js SSR
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export default app;
+export { app, auth, googleProvider };
