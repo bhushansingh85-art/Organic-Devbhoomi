@@ -28,7 +28,7 @@ export default function DevAi() {
   const [messages, setMessages] = useState<{ role: "user" | "model"; text: string }[]>([
     {
       role: "model",
-      text: "Hello? I am Dev Ai.How i can help you today?",
+      text: "Namaste! I am Dev Ai. How can I help you today?",
     },
   ]);
   const [input, setInput] = useState("");

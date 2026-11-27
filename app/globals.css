@@ -2230,21 +2230,6 @@ button {
   animation-delay: 0.18s;
 }
 
-.botanical-leaf--5 {
-  top: 15%;
-  right: 42%;
-  left: auto;
-  animation-delay: 0.18s;
-}
-
-.botanical-leaf--6 {
-  top: 62%;
-  right: 42%;
-  left: auto;
-  animation-delay: 0.18s;
-}
-
-
 .botanical-drawer-panel {
   position: fixed;
   top: 0;
