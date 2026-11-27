@@ -11,30 +11,40 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function applyThemeClass(theme: Theme) {
+  const isDark = theme === "dark";
+  document.documentElement.classList.toggle("dark", isDark);
+  document.body.classList.toggle("dark", isDark);
+}
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    return savedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
-      document.body.classList.toggle("dark", savedTheme === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-      document.body.classList.add("dark");
-    }
+    const initial = getInitialTheme();
+    setTheme(initial);
+    applyThemeClass(initial);
+    setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!mounted) return;
+    localStorage.setItem("theme", theme);
+    applyThemeClass(theme);
+  }, [theme, mounted]);
+
   const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const nextTheme: Theme = prevTheme === "light" ? "dark" : "light";
-      localStorage.setItem("theme", nextTheme);
-      document.documentElement.classList.toggle("dark", nextTheme === "dark");
-      document.body.classList.toggle("dark", nextTheme === "dark");
-      return nextTheme;
-    });
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (
