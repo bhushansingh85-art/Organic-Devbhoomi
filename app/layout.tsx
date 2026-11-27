@@ -40,7 +40,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="relative min-h-screen antialiased" suppressHydrationWarning>
+      <body
+        className="site relative min-h-screen antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
           {children}
           <DevAiButton />
