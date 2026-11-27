@@ -2072,7 +2072,7 @@ button {
   }
 }
 
-/* Botanical Leaf Unfurl Drawer & Floating Leaves */
+/* Botanical Leaf Unfurl Drawer & Floating Scattered Leaves */
 @keyframes botanicalBackdropFade {
   from {
     opacity: 0;
@@ -2100,7 +2100,7 @@ button {
     transform: scale(0.35) rotate(-18deg) translate3d(-18px, 16px, 0);
   }
   65% {
-    opacity: 0.95;
+    opacity: 0.96;
     transform: scale(1.06) rotate(3deg) translate3d(2px, -2px, 0);
   }
   100% {
@@ -2137,34 +2137,45 @@ button {
   animation: botanicalBackdropFade 0.28s ease both;
 }
 
-/* स्क्रीन पर अलग-अलग जगह आने वाले पत्तों की लेयर */
+/* पूरी स्क्रीन पर बिखरी पत्तियों की लेयर */
 .botanical-leaf-layer {
   position: fixed;
   inset: 0;
-  z-index: 9998;
-  pointer-events: none;
+  z-index: 9999;
+  pointer-events: auto;
   overflow: hidden;
 }
 
+/* हर पत्ती के ऊपर टेक्स्ट दिखाने और क्लिक करने योग्य बनाने के लिए */
 .botanical-leaf {
   position: fixed;
-  width: clamp(130px, 34vw, 220px);
-  height: clamp(82px, 21vw, 136px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  min-width: clamp(135px, 34vw, 220px);
+  min-height: clamp(82px, 21vw, 134px);
   background: linear-gradient(
     135deg,
-    rgba(23, 77, 53, 0.92) 0%,
-    rgba(45, 104, 75, 0.88) 65%,
-    rgba(155, 189, 134, 0.82) 100%
+    rgba(23, 77, 53, 0.95) 0%,
+    rgba(45, 104, 75, 0.92) 65%,
+    rgba(155, 189, 134, 0.88) 100%
   );
-  border: 1px solid rgba(181, 212, 169, 0.55);
-  /* आपके बनाए पत्ते जैसा नोकदार + उभरा हुआ शेप */
+  color: #ffffff;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(181, 212, 169, 0.65);
   border-radius: 85% 12% 82% 18% / 88% 15% 85% 16%;
   box-shadow:
-    0 14px 34px rgba(17, 35, 28, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    0 14px 34px rgba(17, 35, 28, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   opacity: 0;
-  transform-origin: bottom left;
+  transform-origin: center;
   animation: botanicalLeafPop 0.56s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* पत्ते की बीच की नस (leaf vein) */
@@ -2175,27 +2186,40 @@ button {
   right: 16%;
   top: 52%;
   height: 1.5px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), transparent);
   transform: rotate(-16deg);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* 3 पत्ते — जैसा आपने इमेज में दिखाया */
+.botanical-leaf > * {
+  position: relative;
+  z-index: 1;
+}
+
+.botanical-leaf:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 18px 40px rgba(17, 35, 28, 0.36);
+}
+
+/* पूरी स्क्रीन पर बिखरी पत्तियों की पोज़िशन */
 .botanical-leaf--1 {
   top: 15%;
-  left: 22%;
+  left: 10%;
   animation-delay: 0.06s;
 }
 
 .botanical-leaf--2 {
   top: 40%;
-  left: 34%;
-  transform-origin: bottom left;
+  right: 11%;
+  left: auto;
   animation-delay: 0.18s;
 }
 
 .botanical-leaf--3 {
-  top: 63%;
-  left: 24%;
+  bottom: 16%;
+  left: 18%;
+  top: auto;
   animation-delay: 0.3s;
 }
 
