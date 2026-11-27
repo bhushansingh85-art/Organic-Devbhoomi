@@ -2072,7 +2072,7 @@ button {
   }
 }
 
-/* Replaced .leaf-screen-overlay & .big-leaf-btn with Botanical Slide Drawer */
+/* Botanical Leaf Unfurl Drawer */
 @keyframes botanicalBackdropFade {
   from {
     opacity: 0;
@@ -2085,7 +2085,7 @@ button {
 @keyframes botanicalSheetSlideIn {
   from {
     opacity: 0;
-    transform: translate3d(-32px, 0, 0) scale(0.985);
+    transform: translate3d(-28px, 0, 0) scale(0.98);
   }
   to {
     opacity: 1;
@@ -2093,14 +2093,21 @@ button {
   }
 }
 
-@keyframes botanicalItemReveal {
-  from {
+/* पत्तियों के खिलने और बाहर आने का एनीमेशन */
+@keyframes botanicalLeafUnfurl {
+  0% {
     opacity: 0;
-    transform: translate3d(-16px, 10px, 0);
+    transform: translate3d(-24px, 12px, 0) scale(0.84) rotate(-6deg);
+    clip-path: inset(0 100% 0 0 round 24px 4px 24px 4px);
   }
-  to {
+  65% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(3px, -1px, 0) scale(1.02) rotate(0.8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    clip-path: inset(0 0 0 0 round 4px 22px 6px 22px);
   }
 }
 
@@ -2116,7 +2123,7 @@ button {
 
 .botanical-drawer-panel {
   position: fixed;
-  top: 0;
+  top: 68px;
   left: 0;
   bottom: 0;
   width: min(370px, 88vw);
@@ -2127,16 +2134,16 @@ button {
   gap: 20px;
   padding: 24px 20px 28px;
   overflow-y: auto;
-  background: var(--bg);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
   color: var(--text);
   border-right: 1px solid var(--border);
   box-shadow: 18px 0 50px rgba(17, 35, 28, 0.22);
-  animation: botanicalSheetSlideIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: botanicalSheetSlideIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .site.dark .botanical-drawer-panel,
 .dark .botanical-drawer-panel {
-  background: linear-gradient(180deg, #152219 0%, #101913 100%);
+  background: linear-gradient(180deg, #152219 0%, #0f1812 100%);
   box-shadow: 18px 0 55px rgba(0, 0, 0, 0.55);
 }
 
@@ -2172,7 +2179,7 @@ button {
   place-items: center;
   font-size: 16px;
   line-height: 1;
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
 }
 
 .botanical-drawer-close:hover {
@@ -2185,19 +2192,23 @@ button {
 .botanical-nav-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
+/* पत्ते के आकार (leaf shape) वाला मेनू आइटम */
 .botanical-nav-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 14px;
+  padding: 14px 18px;
+  border-radius: 4px 22px 6px 22px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background:
+    radial-gradient(circle at top right, rgba(155, 189, 134, 0.22), transparent 60%),
+    var(--surface);
   color: var(--text);
   font-family: 'Manrope', sans-serif;
   font-size: 16px;
@@ -2205,25 +2216,28 @@ button {
   letter-spacing: -0.02em;
   text-align: left;
   opacity: 0;
-  animation: botanicalItemReveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: left center;
+  animation: botanicalLeafUnfurl 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   transition:
-    transform 0.22s ease,
-    border-color 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .botanical-nav-card:hover {
-  transform: translateX(6px);
+  transform: translateX(7px) rotate(-0.8deg);
   border-color: var(--green2);
-  background: var(--bg);
-  box-shadow: 0 8px 22px rgba(23, 77, 53, 0.1);
+  background:
+    radial-gradient(circle at top right, rgba(155, 189, 134, 0.32), transparent 65%),
+    var(--bg);
+  box-shadow: 0 10px 24px rgba(23, 77, 53, 0.14);
 }
 
 .site.dark .botanical-nav-card:hover,
 .dark .botanical-nav-card:hover {
   border-color: var(--lime);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
 }
 
 .botanical-nav-index {
@@ -2232,25 +2246,25 @@ button {
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--green);
-  background: rgba(155, 189, 134, 0.22);
-  padding: 4px 8px;
-  border-radius: 999px;
+  background: rgba(155, 189, 134, 0.25);
+  padding: 4px 9px;
+  border-radius: 4px 12px 4px 12px;
 }
 
 .site.dark .botanical-nav-index,
 .dark .botanical-nav-index {
   color: #b5d4a9;
-  background: rgba(155, 189, 134, 0.14);
+  background: rgba(155, 189, 134, 0.16);
 }
 
 .botanical-nav-arrow {
   font-size: 15px;
   color: var(--sub);
-  transition: transform 0.22s ease, color 0.22s ease;
+  transition: transform 0.25s ease, color 0.25s ease;
 }
 
 .botanical-nav-card:hover .botanical-nav-arrow {
-  transform: translateX(4px);
+  transform: translateX(5px);
   color: var(--green);
 }
 
