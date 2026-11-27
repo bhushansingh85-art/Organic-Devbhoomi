@@ -1,16 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 import { auth, googleProvider } from "../../../lib/firebase";
 
 export const dynamic = "force-static";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +22,14 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
 
   const formatAuthError = (err: unknown, fallback: string) => {
     const code =
@@ -29,34 +41,45 @@ export default function LoginPage() {
       case "auth/invalid-credential":
       case "auth/wrong-password":
       case "auth/user-not-found":
-        return "ईमेल या पासवर्ड गलत है। कृपया दोबारा जांचें।";
+        return "Invalid email or password. Please check and try again.";
       case "auth/email-already-in-use":
-        return "यह ईमेल पहले से रजिस्टर्ड है। कृपया Sign In करें।";
+        return "This email is already registered. Please sign in instead.";
       case "auth/weak-password":
-        return "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।";
+        return "Password should be at least 6 characters long.";
       case "auth/invalid-email":
-        return "कृपया एक सही ईमेल पता दर्ज करें।";
+        return "Please enter a valid email address.";
       case "auth/popup-closed-by-user":
-        return "Google लॉगिन पॉपअप बंद कर दिया गया।";
+        return "Google sign-in popup was closed before completing.";
       default:
         return err instanceof Error && err.message ? err.message : fallback;
     }
   };
 
-  // Email & Password Login / Sign Up
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setStatusMessage("");
+
+    const trimmedName = name.trim();
+    if (isRegistering && !trimmedName) {
+      setError("Please enter your full name.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (isRegistering) {
-        await createUserWithEmailAndPassword(auth, email.trim(), password);
-        setStatusMessage("अकाउंट सफलतापूर्वक बन गया है!");
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          email.trim(),
+          password
+        );
+        await updateProfile(credential.user, { displayName: trimmedName });
+        setStatusMessage("Account created successfully!");
       } else {
         await signInWithEmailAndPassword(auth, email.trim(), password);
-        setStatusMessage("सफलतापूर्वक लॉग इन हो गए हैं!");
+        setStatusMessage("Signed in successfully!");
       }
     } catch (err: unknown) {
       setError(formatAuthError(err, "Authentication failed."));
@@ -65,7 +88,6 @@ export default function LoginPage() {
     }
   };
 
-  // Google Sign-In
   const handleGoogleLogin = async () => {
     setError("");
     setStatusMessage("");
@@ -73,7 +95,7 @@ export default function LoginPage() {
 
     try {
       await signInWithPopup(auth, googleProvider);
-      setStatusMessage("Google से सफलतापूर्वक लॉग इन हो गए हैं!");
+      setStatusMessage("Signed in with Google successfully!");
     } catch (err: unknown) {
       setError(formatAuthError(err, "Google sign-in failed."));
     } finally {
@@ -82,104 +104,153 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/90 p-7 sm:p-8 text-slate-100 shadow-2xl backdrop-blur-xl">
-        {/* Header */}
-        <div className="mb-7 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/15 text-indigo-400 ring-1 ring-indigo-400/30">
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-              />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">
-            {isRegistering ? "नया अकाउंट बनाएं" : "वापस स्वागत है"}
-          </h2>
-          <p className="mt-1.5 text-sm text-slate-400">
-            {isRegistering
-              ? "शुरू करने के लिए अपनी जानकारी भरें"
-              : "अपने अकाउंट में साइन इन करने के लिए विवरण दर्ज करें"}
-          </p>
+    <section className="botanical-auth-wrap">
+      <div className="botanical-auth-inner">
+        <button
+          type="button"
+          onClick={handleBack}
+          aria-label="Go back"
+          className="botanical-back-btn"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+          <span>Back</span>
+        </button>
+      </div>
+
+      <div className="botanical-auth-card">
+        <div className="botanical-auth-eyebrow">
+          <span className="botanical-auth-eyebrow-line" />
+          <span>{isRegistering ? "NEW MEMBER" : "MEMBER ACCESS"}</span>
+          <span className="botanical-auth-eyebrow-line" />
         </div>
 
-        {/* Error / Success Alerts */}
-        {error && (
-          <div
-            role="alert"
-            className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+        <h1 className="botanical-auth-title">
+          {isRegistering ? (
+            <>
+              Create <em>account</em>
+            </>
+          ) : (
+            <>
+              Welcome <em>back</em>
+            </>
+          )}
+        </h1>
+
+        <p className="botanical-auth-subtitle">
+          {isRegistering
+            ? "Enter your details below to create your account."
+            : "Sign in with your email or continue with Google."}
+        </p>
+
+        <div className="botanical-auth-tabs">
+          <button
+            type="button"
+            onClick={() => {
+              setError("");
+              setStatusMessage("");
+              setIsRegistering(false);
+            }}
+            className={`botanical-auth-tab ${!isRegistering ? "is-active" : ""}`}
           >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setError("");
+              setStatusMessage("");
+              setIsRegistering(true);
+            }}
+            className={`botanical-auth-tab ${isRegistering ? "is-active" : ""}`}
+          >
+            Register
+          </button>
+        </div>
+
+        {error && (
+          <div role="alert" className="botanical-auth-error">
             {error}
           </div>
         )}
 
         {statusMessage && (
-          <div
-            role="status"
-            className="mb-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300"
-          >
+          <div role="status" className="botanical-auth-success">
             {statusMessage}
           </div>
         )}
 
-        {/* Email & Password Form */}
-        <form onSubmit={handleEmailAuth} className="space-y-4">
+        <form onSubmit={handleEmailAuth} className="botanical-auth-form">
+          {isRegistering && (
+            <div>
+              <label htmlFor="auth-name" className="botanical-auth-label">
+                Full Name
+              </label>
+              <input
+                id="auth-name"
+                type="text"
+                required
+                autoComplete="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={loading}
+                placeholder="Your full name"
+                className="botanical-auth-input"
+              />
+            </div>
+          )}
+
           <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-sm font-medium text-slate-300"
-            >
-              ईमेल पता
+            <label htmlFor="auth-email" className="botanical-auth-label">
+              Email Address
             </label>
             <input
-              id="email"
+              id="auth-email"
               type="email"
               required
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              placeholder="name@example.com"
-              className="w-full rounded-xl border border-slate-700/80 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 disabled:opacity-60"
+              placeholder="you@example.com"
+              className="botanical-auth-input"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="mb-1.5 block text-sm font-medium text-slate-300"
-            >
-              पासवर्ड
+            <label htmlFor="auth-password" className="botanical-auth-label">
+              Password
             </label>
-            <div className="relative">
+            <div className="botanical-auth-pw-wrap">
               <input
-                id="password"
+                id="auth-password"
                 type={showPassword ? "text" : "password"}
                 required
-                autoComplete={
-                  isRegistering ? "new-password" : "current-password"
-                }
+                autoComplete={isRegistering ? "new-password" : "current-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-slate-700/80 bg-slate-950/70 py-2.5 pl-3.5 pr-16 text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 disabled:opacity-60"
+                className="botanical-auth-input botanical-auth-pw-input"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 disabled={loading}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400 transition hover:text-slate-200"
+                className="botanical-auth-pw-toggle"
               >
-                {showPassword ? "छुपाएं" : "दिखाएं"}
+                {showPassword ? "HIDE" : "SHOW"}
               </button>
             </div>
           </div>
@@ -187,33 +258,29 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+            className="botanical-auth-submit"
           >
             {loading
-              ? "कृपया प्रतीक्षा करें..."
+              ? "Please wait..."
               : isRegistering
-              ? "अकाउंट बनाएं"
-              : "ईमेल से लॉग इन करें"}
+              ? "Create Account"
+              : "Sign In with Email"}
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="my-6 flex items-center gap-3">
-          <div className="h-px flex-1 bg-slate-800" />
-          <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            या
-          </span>
-          <div className="h-px flex-1 bg-slate-800" />
+        <div className="botanical-auth-divider">
+          <div className="botanical-auth-divider-line" />
+          <span>OR</span>
+          <div className="botanical-auth-divider-line" />
         </div>
 
-        {/* Google Sign-In Button */}
         <button
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm font-medium text-white transition hover:border-slate-600 hover:bg-slate-800 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className="botanical-auth-google"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24">
+          <svg width="16" height="16" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
               d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.13z"
@@ -231,12 +298,11 @@ export default function LoginPage() {
               d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"
             />
           </svg>
-          <span>Google से जारी रखें</span>
+          <span>Continue with Google</span>
         </button>
 
-        {/* Toggle Sign In / Sign Up */}
-        <p className="mt-6 text-center text-sm text-slate-400">
-          {isRegistering ? "क्या आपका पहले से अकाउंट है?" : "नया अकाउंट चाहिए?"}{" "}
+        <p className="botanical-auth-switch">
+          {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             type="button"
             onClick={() => {
@@ -244,12 +310,12 @@ export default function LoginPage() {
               setStatusMessage("");
               setIsRegistering((prev) => !prev);
             }}
-            className="font-semibold text-indigo-400 underline-offset-4 hover:text-indigo-300 hover:underline"
+            className="botanical-auth-switch-btn"
           >
-            {isRegistering ? "साइन इन करें" : "साइन अप करें"}
+            {isRegistering ? "Sign In" : "Create Account"}
           </button>
         </p>
       </div>
-    </div>
+    </section>
   );
 }
