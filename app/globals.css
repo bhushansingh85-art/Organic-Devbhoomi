@@ -2223,12 +2223,35 @@ button {
   animation-delay: 0.3s;
 }
 
+.botanical-leaf--4 {
+  top: 15%;
+  right: 23%;
+  left: auto;
+  animation-delay: 0.18s;
+}
+
+.botanical-leaf--5 {
+  top: 15%;
+  right: 42%;
+  left: auto;
+  animation-delay: 0.18s;
+}
+
+.botanical-leaf--6 {
+  top: 62%;
+  right: 42%;
+  left: auto;
+  animation-delay: 0.18s;
+}
+
+
 .botanical-drawer-panel {
   position: fixed;
-  top: 68px;
+  top: 0;
   left: 0;
   bottom: 0;
   width: min(370px, 88vw);
+  height: 100%;
   z-index: 9999;
   display: flex;
   flex-direction: column;
