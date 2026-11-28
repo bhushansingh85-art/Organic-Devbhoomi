@@ -18,42 +18,29 @@ function applyThemeClass(theme: Theme) {
   document.body.classList.toggle("dark", isDark);
 }
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
-  try {
-    const savedTheme = window.localStorage.getItem("theme");
-    if (savedTheme === "light" || savedTheme === "dark") {
-      return savedTheme;
-    }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  } catch {
-    return "light";
-  }
-}
-
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>("light");
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const initial = getInitialTheme();
-    setTheme(initial);
-    applyThemeClass(initial);
-    setInitialized(true);
+    const savedTheme = window.localStorage.getItem("theme");
+    const initialTheme: Theme =
+      savedTheme === "dark" || savedTheme === "light"
+        ? savedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+
+    setTheme(initialTheme);
+    applyThemeClass(initialTheme);
   }, []);
 
-  useEffect(() => {
-    if (!initialized) return;
-    try {
-      window.localStorage.setItem("theme", theme);
-    } catch {
-      // ignore storage errors
-    }
-    applyThemeClass(theme);
-  }, [theme, initialized]);
-
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => {
+      const nextTheme: Theme = prevTheme === "light" ? "dark" : "light";
+      window.localStorage.setItem("theme", nextTheme);
+      applyThemeClass(nextTheme);
+      return nextTheme;
+    });
   };
 
   return (
