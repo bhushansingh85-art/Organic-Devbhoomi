@@ -53,15 +53,17 @@ const drawerItems: DrawerNavItem[] = [
 
 export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
   const router = useRouter();
-  const { dark, toggleDark } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [mobileMenu, setMobileMenu] = useState(false);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', dark ? 'dark' : 'light');
-    root.classList.toggle('dark', Boolean(dark));
-  }, [dark]);
+    root.setAttribute('data-theme', theme);
+    root.classList.toggle('dark', isDark);
+  }, [theme, isDark]);
 
   useEffect(() => {
     if (!mobileMenu) return;
@@ -187,9 +189,9 @@ export default function Header({ cartCount = 0, onOpenCart }: HeaderProps) {
             type="button"
             className="icon-btn theme-btn"
             aria-label="Toggle theme"
-            onClick={toggleDark}
+            onClick={toggleTheme}
           >
-            {dark ? <Sun size={19} /> : <Moon size={19} />}
+            {isDark ? <Sun size={19} /> : <Moon size={19} />}
           </button>
           <button
             type="button"
